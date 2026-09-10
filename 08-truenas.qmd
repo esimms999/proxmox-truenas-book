@@ -1,0 +1,20 @@
+# TrueNAS after passthrough {#sec-truenas}
+
+## First checks
+
+- Disks appear with serial numbers, not generic `sdX` only
+- SMART works inside TrueNAS, not on the Proxmox host
+- Pool import or create succeeds without "disk in use" errors
+
+## Guest hygiene
+
+- Static MAC on the VirtIO NIC, plus a DHCP reservation or static IP
+- Do not use Proxmox snapshots of the virtual OS disk as the backup plan for the pool
+- Snapshot and replicate **inside** TrueNAS (or `zfs send` to another box)
+- VirtIO networking is enough for SMB/NFS. Pass a spare NIC later if you want 10 GbE with less CPU
+
+## What not to do
+
+- Do not let Proxmox mount or SMART-scan the HBA disks
+- Do not put swap or the Proxmox boot disk on the passed-through card
+- Do not enable QEMU disk cache tricks on the data pool — there is no QEMU disk in front of it

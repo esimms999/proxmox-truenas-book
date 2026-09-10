@@ -1,0 +1,43 @@
+# Bind the HBA to vfio-pci {#sec-vfio}
+
+If Proxmox loads `mpt3sas`, `mpt2sas`, or `megaraid_sas` on the card, the host can see — and touch — the TrueNAS disks. Bind the card to vfio before you create the VM.
+
+## Confirm IDs
+
+```bash
+lspci -nn -s 02:00.0
+```
+
+Use **your** address and ID. The rest of this chapter keeps `02:00.0` and `1000:0097` as the example.
+
+## Bind and blacklist
+
+```bash
+echo "options vfio-pci ids=1000:0097" > /etc/modprobe.d/vfio.conf
+echo "blacklist mpt3sas" >> /etc/modprobe.d/blacklist.conf
+echo "blacklist mpt2sas" >> /etc/modprobe.d/blacklist.conf
+update-initramfs -u -k all
+reboot
+```
+
+After reboot:
+
+```bash
+lspci -k -s 02:00.0
+```
+
+`Kernel driver in use:` must be `vfio-pci`, not `mpt3sas`. The data disks should vanish from the Proxmox **Disks** view.
+
+## If the host driver still wins
+
+```bash
+echo "softdep mpt3sas pre: vfio-pci" >> /etc/modprobe.d/vfio.conf
+update-initramfs -u -k all
+reboot
+```
+
+Multi-function cards: put every vendor:device ID on one line, comma-separated:
+
+```text
+options vfio-pci ids=1000:0097,1000:00c9
+```

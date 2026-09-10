@@ -1,0 +1,38 @@
+# Pass the HBA into the VM {#sec-passthrough}
+
+## From the Proxmox UI
+
+VM → **Hardware** → **Add** → **PCI Device**.
+
+- Device: `02:00.0`, or the whole `02:00` if you tick **All Functions**
+- **PCI-Express**: on (`pcie=1`)
+- **ROM-Bar**: **off** (`rombar=0`)
+- Primary GPU: off
+
+ROM-Bar off is the usual fix for a VM that hangs on "Booting from Hard Disk" after an LSI card is added.
+
+## From the CLI
+
+One function:
+
+```bash
+qm set 300 --hostpci0 02:00.0,pcie=1,rombar=0
+```
+
+Every function at that address (preferred for HBAs):
+
+```bash
+qm set 300 --hostpci0 02:00,pcie=1,rombar=0
+```
+
+Do **not** make the HBA a boot device. TrueNAS boots from the virtual OS disk.
+
+## After start
+
+In TrueNAS: **Storage → Disks**. You should see real model names, serials, and SMART. Import an existing pool or create a new one.
+
+The matching line in `/etc/pve/qemu-server/300.conf` looks like:
+
+```text
+hostpci0: 0000:02:00,pcie=1,rombar=0
+```

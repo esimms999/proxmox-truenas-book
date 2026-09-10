@@ -1,0 +1,28 @@
+# Preface {.unnumbered}
+
+This book is a working runbook for running **TrueNAS SCALE as a VM on a Proxmox VE host**, with the data disks attached through a dedicated **HBA in IT mode** passed through to the guest.
+
+That is the layout iXsystems still recommends for production data: the hypervisor owns its own boot disk; TrueNAS owns the storage controller and the pool.
+
+Use it as:
+
+- a **Quarto book** (numbered chapters, cross-references, PDF/EPUB)
+- a **website** (`quarto render` → `_book/index.html`, then publish with `quarto publish`)
+
+## How to build
+
+In RStudio: **File → Open Project** on this folder, then **Render Book**.
+
+From a terminal in this directory:
+
+```bash
+quarto preview
+quarto render
+quarto publish gh-pages
+```
+
+## Scope
+
+Chapters walk the host from a cold BIOS through IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line, and the failures that usually show up after the HBA is attached.
+
+Commands assume a current Proxmox VE 8/9 host and TrueNAS SCALE 24.10 / 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own `lspci`.

@@ -1,0 +1,43 @@
+# Create the TrueNAS SCALE VM {#sec-vm}
+
+Install TrueNAS onto a **virtual OS disk** first, with no HBA attached. Confirm it boots. Add passthrough in @sec-passthrough.
+
+## Settings that matter
+
+| Setting | Value |
+|---------|--------|
+| Machine | **q35** |
+| BIOS | **OVMF (UEFI)** |
+| CPU type | **host** |
+| Cores | 4 or more |
+| RAM | 16 GB minimum, ballooning **off** |
+| SCSI controller (OS disk only) | VirtIO SCSI |
+| OS disk | 16–32 GB on Proxmox SSD/NVMe |
+| Network | VirtIO on `vmbr0` |
+| Start at boot | Off until passthrough works |
+
+q35 is required for real PCIe. i440fx only does legacy PCI.
+
+## Example `qm create`
+
+```bash
+qm create 300 \
+  --name truenas \
+  --memory 16384 \
+  --balloon 0 \
+  --cores 4 \
+  --cpu host \
+  --bios ovmf \
+  --machine q35 \
+  --efidisk0 local-lvm:1,efitype=4m,pre-enrolled-keys=0 \
+  --scsihw virtio-scsi-single \
+  --scsi0 local-lvm:32,ssd=1 \
+  --net0 virtio,bridge=vmbr0 \
+  --ostype l26
+```
+
+Attach the SCALE ISO, set boot order to the CD, install onto `scsi0`, then set boot back to the virtual disk.
+
+::: {.callout-tip}
+Keep the TrueNAS boot pool on the virtual disk. The HBA is only for the data pool. You can rebuild the VM and import the same pool later.
+:::

@@ -1,0 +1,47 @@
+# Identify the HBA and IOMMU group {#sec-identify}
+
+## Find the card
+
+```bash
+lspci -nn | grep -iE 'sas|scsi|lsi|broadcom|aha|hba'
+```
+
+Example output:
+
+```text
+02:00.0 Serial Attached SCSI controller [0107]: Broadcom / LSI SAS3008 [1000:0097]
+```
+
+- `02:00.0` is the PCI address
+- `1000:0097` is vendor:device (needed for vfio)
+
+## Print IOMMU groups
+
+```bash
+for d in /sys/kernel/iommu_groups/*/devices/*; do
+  g=${d#*/iommu_groups/}; g=${g%%/*}
+  echo "IOMMU Group $g: $(lspci -nns ${d##*/})"
+done | sort -V
+```
+
+The HBA should sit **alone** in its group, or only with its own extra functions (`02:00.0`, `02:00.1`, …).
+
+## When the group is dirty
+
+If the HBA shares a group with the management NIC, GPU, chipset USB, or the Proxmox boot controller, do not pass that group. The host will lose those devices the moment the VM starts.
+
+Fix in this order:
+
+1. Move the HBA to another PCIe slot (try slot 1).
+2. Update the motherboard BIOS.
+3. Last resort on a single-tenant homelab only: add to the kernel command line:
+
+```text
+pcie_acs_override=downstream,multifunction
+```
+
+Then `update-grub` or `proxmox-boot-tool refresh` and reboot.
+
+::: {.callout-warning}
+ACS override weakens DMA isolation between devices. Fine on a box only you use. Do not use it on a shared host.
+:::

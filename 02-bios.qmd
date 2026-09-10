@@ -1,0 +1,32 @@
+# BIOS and UEFI settings {#sec-bios}
+
+Reboot the physical host and enter setup (Del, F2, or F10). Names vary by vendor. Enable every row that exists.
+
+## Settings that matter
+
+| Setting | Set to | Why |
+|---------|--------|-----|
+| Intel **VT-x** or AMD **SVM / AMD-V** | Enabled | Basic virtualization. Not IOMMU. |
+| Intel **VT-d** or AMD **AMD-Vi / IOMMU** | Enabled | Required for PCI passthrough. |
+| **SR-IOV** | Enabled if present | Not required for an HBA. |
+| **Above 4G Decoding** | Enabled | More important for GPUs; enable anyway. |
+| **Resizable BAR** | Off unless you also pass a GPU | Can confuse some HBAs. |
+| **CSM / Legacy boot** | Off if Proxmox is UEFI | Stay in UEFI end to end. |
+| **Secure Boot** | Off (simplest) | Avoids vfio module signing fights. |
+| **iGPU / Integrated Graphics** | Disable if the VM hangs after adding the HBA | Common Intel hang fix. |
+| Slot **Option ROM / OPROM** for the HBA | Disabled if available | Stops the card from trying to boot the host. |
+
+Save and reboot into Proxmox.
+
+## Where vendors hide IOMMU
+
+- **Intel:** Advanced → CPU Configuration, System Agent, or Chipset. Labels: *VT-d*, *Intel VT for Directed I/O*, *IOMMU*.
+- **AMD:** Advanced → AMD CBS → NBIO, or next to *SVM Mode*. Labels: *IOMMU*, *AMD-Vi*.
+
+::: {.callout-important}
+VT-x / SVM alone is not enough. Without VT-d or AMD-Vi, `/sys/kernel/iommu_groups` stays empty and Proxmox will refuse the PCI device.
+:::
+
+## Slot choice
+
+On many B450/B550/X570 boards the HBA only isolates cleanly in the **first full-length PCIe slot**. If @sec-identify shows a shared group, move the card before you add ACS override.

@@ -1,0 +1,44 @@
+# Troubleshooting {#sec-trouble}
+
+## VM hangs at "Booting from Hard Disk"
+
+Set `rombar=0` (uncheck **ROM-Bar**). Disable the slot Option ROM in system BIOS. Some LSI utilities also have "boot from this controller" — turn that off. The VM should boot the virtual OS disk only.
+
+## IOMMU groups missing / "PCI device not available"
+
+VT-d or AMD-Vi is still off, or the kernel flags did not apply.
+
+```bash
+cat /proc/cmdline
+dmesg | grep -e DMAR -e IOMMU -e AMD-Vi
+```
+
+Revisit @sec-bios and @sec-iommu.
+
+## Proxmox still lists the data disks
+
+vfio bind failed. `lspci -k -s 02:00.0` should show `vfio-pci`. Rebuild initramfs after blacklist changes (@sec-vfio).
+
+## TrueNAS sees the HBA but no disks
+
+- Confirm IT firmware, not IR
+- Pass **all functions** of the card
+- Reseat SFF-8087 / 8643 cables; the card can enumerate with no SAS link
+- Check disk power
+
+## Host dies when the VM autostarts
+
+The HBA shared an IOMMU group with the management NIC. From the boot menu, drop `intel_iommu=on` / `amd_iommu=on` for one boot, turn VM autostart off, fix grouping (@sec-identify), then re-enable IOMMU.
+
+## Need ACS override?
+
+Only after a slot change and a BIOS update still leave a dirty group. Homelab only.
+
+## Quick verification set
+
+```bash
+cat /proc/cmdline
+dmesg | grep -e DMAR -e IOMMU -e vfio
+lspci -k -s 02:00.0
+ls /sys/kernel/iommu_groups
+```

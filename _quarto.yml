@@ -1,0 +1,50 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "TrueNAS SCALE on Proxmox"
+  subtitle: "HBA passthrough from BIOS to a running pool"
+  author: "Eric"
+  date: today
+  chapters:
+    - index.qmd
+    - 01-overview.qmd
+    - 02-bios.qmd
+    - 03-iommu.qmd
+    - 04-identify-hba.qmd
+    - 05-vfio.qmd
+    - 06-create-vm.qmd
+    - 07-passthrough.qmd
+    - 08-truenas.qmd
+    - 09-troubleshooting.qmd
+    - 10-reference.qmd
+  sidebar:
+    style: docked
+    search: true
+  page-navigation: true
+  repo-actions: [source, issue]
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-copy: true
+    code-overflow: wrap
+    link-external-newwindow: true
+    smooth-scroll: true
+  pdf:
+    documentclass: book
+    toc: true
+    number-sections: true
+  epub:
+    toc: true
+
+execute:
+  echo: true
+  eval: false
+  freeze: auto

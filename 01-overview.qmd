@@ -1,0 +1,36 @@
+# Overview {#sec-overview}
+
+## Target architecture
+
+```
+[ motherboard BIOS: VT-x/SVM + VT-d/AMD-Vi ]
+        ↓
+[ Proxmox kernel: intel/amd_iommu=on iommu=pt + vfio ]
+        ↓
+[ HBA bound to vfio-pci, blacklisted from host SAS driver ]
+        ↓
+[ TrueNAS VM: q35 + OVMF + hostpci0 ...,pcie=1,rombar=0 ]
+        ↓
+[ TrueNAS owns the HBA and the data pool ]
+```
+
+Proxmox boots from its own NVMe or board SATA. TrueNAS boots from a small virtual disk. The HBA and every disk on it belong only to the VM.
+
+## Why pass the HBA, not individual disks
+
+Virtual disks and "passthrough by serial" sit behind the hypervisor. ZFS then cannot trust SMART, cache flush, or device identity the way it can on bare metal. Passing the **entire controller** gives TrueNAS the same view it would have on metal: serials, SMART, resilver, and disk replace.
+
+Do **not** put the Proxmox boot drive on that HBA.
+
+## Hardware checklist
+
+- CPU and board with IOMMU: Intel **VT-d** or AMD **AMD-Vi**
+- Dedicated HBA flashed to **IT mode** (not IR/RAID)
+- Cards that behave well: LSI/Broadcom 9207-8i, 9300-8i, 9400-8i, Dell H310 in IT mode
+- Confirm firmware with `sas2flash -list` or `sas3flash -list` — look for `(IT)`
+- RAM for the VM: 16 GB is a floor; more if the pool is large
+- HBA in a PCIe slot that can land in its own IOMMU group (often slot 1 on consumer boards)
+
+::: {.callout-warning}
+IR/RAID firmware hides disks behind a RAID abstraction. ZFS needs raw devices. Flash IT mode **before** you pass the card through.
+:::

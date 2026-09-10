@@ -1,0 +1,76 @@
+# Command reference {#sec-ref}
+
+## Host
+
+```bash
+proxmox-boot-tool status
+cat /proc/cmdline
+dmesg | grep -e DMAR -e IOMMU -e AMD-Vi -e vfio
+lspci -nn | grep -iE 'sas|scsi|lsi|broadcom'
+lspci -k -s 02:00.0
+```
+
+IOMMU groups:
+
+```bash
+for d in /sys/kernel/iommu_groups/*/devices/*; do
+  g=${d#*/iommu_groups/}; g=${g%%/*}
+  echo "IOMMU Group $g: $(lspci -nns ${d##*/})"
+done | sort -V
+```
+
+## Kernel flags
+
+Intel GRUB:
+
+```text
+quiet intel_iommu=on iommu=pt
+```
+
+AMD GRUB:
+
+```text
+quiet amd_iommu=on iommu=pt
+```
+
+Optional last-resort ACS split:
+
+```text
+pcie_acs_override=downstream,multifunction
+```
+
+## vfio
+
+```text
+# /etc/modprobe.d/vfio.conf
+options vfio-pci ids=1000:0097
+softdep mpt3sas pre: vfio-pci
+```
+
+```text
+# /etc/modprobe.d/blacklist.conf
+blacklist mpt3sas
+blacklist mpt2sas
+```
+
+```bash
+update-initramfs -u -k all
+```
+
+## VM
+
+```bash
+qm set 300 --hostpci0 02:00,pcie=1,rombar=0
+```
+
+`/etc/pve/qemu-server/300.conf` fragment:
+
+```text
+bios: ovmf
+machine: q35
+cpu: host
+balloon: 0
+hostpci0: 0000:02:00,pcie=1,rombar=0
+```
+
+Replace `02:00` and `1000:0097` with your `lspci -nn` output.

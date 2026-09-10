@@ -1,0 +1,78 @@
+# Enable IOMMU on the Proxmox host {#sec-iommu}
+
+SSH into the host. See how it boots:
+
+```bash
+proxmox-boot-tool status
+```
+
+## GRUB
+
+Typical on BIOS installs and some older UEFI installs. Edit `/etc/default/grub`.
+
+Intel:
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt"
+```
+
+AMD (modern kernels often enable AMD-Vi without the extra flag; keeping it is fine):
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on iommu=pt"
+```
+
+Apply:
+
+```bash
+update-grub
+```
+
+## systemd-boot
+
+Typical on current UEFI Proxmox 8/9. Edit `/etc/kernel/cmdline` and **append** to the existing line. Do not delete `root=`.
+
+Intel:
+
+```text
+intel_iommu=on iommu=pt
+```
+
+AMD:
+
+```text
+amd_iommu=on iommu=pt
+```
+
+Apply:
+
+```bash
+proxmox-boot-tool refresh
+```
+
+`iommu=pt` is passthrough mode: only devices given to VMs pay IOMMU cost.
+
+::: {.callout-note}
+On Proxmox kernels 6.8+, Intel often turns IOMMU on without `intel_iommu=on`. Keep the flag anyway so the intent is obvious in `/proc/cmdline`.
+:::
+
+## Load VFIO at boot
+
+Add to `/etc/modules`:
+
+```text
+vfio
+vfio_iommu_type1
+vfio_pci
+```
+
+`vfio_virqfd` was folded into other modules on newer kernels. Skip it if `modprobe` complains.
+
+Reboot, then check:
+
+```bash
+dmesg | grep -e DMAR -e IOMMU -e AMD-Vi
+cat /proc/cmdline
+```
+
+You want DMAR or AMD-Vi tables found, "IOMMU enabled", and the flags in the command line.
