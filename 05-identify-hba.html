@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>10&nbsp; Command reference – TrueNAS SCALE on Proxmox</title>
+<title>5&nbsp; Identify the HBA and IOMMU group – TrueNAS SCALE on Proxmox</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,7 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./09-troubleshooting.html" rel="prev">
+<link href="./06-vfio.html" rel="next">
+<link href="./04-iommu.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -289,7 +290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./10-reference.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Command reference</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-identify-hba.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -338,50 +339,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-iommu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
+  <a href="./03-install-proxmox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-identify-hba.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
+  <a href="./04-iommu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-vfio.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
+  <a href="./05-identify-hba.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-create-vm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
+  <a href="./06-vfio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-passthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
+  <a href="./07-create-vm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./08-truenas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
+  <a href="./08-passthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09-troubleshooting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
+  <a href="./09-gpu-passthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10-reference.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
+  <a href="./10-truenas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
   </div>
 </li>
     </ul>
@@ -394,12 +407,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#host" id="toc-host" class="nav-link active" data-scroll-target="#host"><span class="header-section-number">10.1</span> Host</a></li>
-  <li><a href="#kernel-flags" id="toc-kernel-flags" class="nav-link" data-scroll-target="#kernel-flags"><span class="header-section-number">10.2</span> Kernel flags</a></li>
-  <li><a href="#vfio" id="toc-vfio" class="nav-link" data-scroll-target="#vfio"><span class="header-section-number">10.3</span> vfio</a></li>
-  <li><a href="#vm" id="toc-vm" class="nav-link" data-scroll-target="#vm"><span class="header-section-number">10.4</span> VM</a></li>
+  <li><a href="#find-the-card" id="toc-find-the-card" class="nav-link active" data-scroll-target="#find-the-card"><span class="header-section-number">5.1</span> Find the card</a></li>
+  <li><a href="#print-iommu-groups" id="toc-print-iommu-groups" class="nav-link" data-scroll-target="#print-iommu-groups"><span class="header-section-number">5.2</span> Print IOMMU groups</a></li>
+  <li><a href="#when-the-group-is-dirty" id="toc-when-the-group-is-dirty" class="nav-link" data-scroll-target="#when-the-group-is-dirty"><span class="header-section-number">5.3</span> When the group is dirty</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/10-reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/05-identify-hba.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -407,7 +419,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-ref" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Command reference</span></span></h1>
+<h1 class="title"><span id="sec-identify" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></h1>
 </div>
 
 
@@ -424,48 +436,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="host" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="host"><span class="header-section-number">10.1</span> Host</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">proxmox-boot-tool</span> status</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/cmdline</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dmesg</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-e</span> DMAR <span class="at">-e</span> IOMMU <span class="at">-e</span> AMD-Vi <span class="at">-e</span> vfio</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-nn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-iE</span> <span class="st">'sas|scsi|lsi|broadcom'</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-k</span> <span class="at">-s</span> 02:00.0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>IOMMU groups:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> /sys/kernel/iommu_groups/<span class="pp">*</span>/devices/<span class="pp">*</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">g</span><span class="op">=</span><span class="va">${d</span><span class="op">#</span><span class="pp">*</span>/iommu_groups/<span class="va">}</span><span class="kw">;</span> <span class="va">g</span><span class="op">=</span><span class="va">${g</span><span class="op">%%</span>/<span class="pp">*</span><span class="va">}</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"IOMMU Group </span><span class="va">$g</span><span class="st">: </span><span class="va">$(</span><span class="ex">lspci</span> <span class="at">-nns</span> <span class="va">${d</span><span class="op">##</span><span class="pp">*</span>/<span class="va">})</span><span class="st">"</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-V</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="find-the-card" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="find-the-card"><span class="header-section-number">5.1</span> Find the card</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-nn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-iE</span> <span class="st">'sas|scsi|lsi|broadcom|aha|hba'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Example output:</p>
+<pre class="text"><code>02:00.0 Serial Attached SCSI controller [0107]: Broadcom / LSI SAS3008 [1000:0097]</code></pre>
+<ul>
+<li><code>02:00.0</code> is the PCI address</li>
+<li><code>1000:0097</code> is vendor:device (needed for vfio)</li>
+</ul>
 </section>
-<section id="kernel-flags" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="kernel-flags"><span class="header-section-number">10.2</span> Kernel flags</h2>
-<p>Intel GRUB:</p>
-<pre class="text"><code>quiet intel_iommu=on iommu=pt</code></pre>
-<p>AMD GRUB:</p>
-<pre class="text"><code>quiet amd_iommu=on iommu=pt</code></pre>
-<p>Optional last-resort ACS split:</p>
+<section id="print-iommu-groups" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="print-iommu-groups"><span class="header-section-number">5.2</span> Print IOMMU groups</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> /sys/kernel/iommu_groups/<span class="pp">*</span>/devices/<span class="pp">*</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">g</span><span class="op">=</span><span class="va">${d</span><span class="op">#</span><span class="pp">*</span>/iommu_groups/<span class="va">}</span><span class="kw">;</span> <span class="va">g</span><span class="op">=</span><span class="va">${g</span><span class="op">%%</span>/<span class="pp">*</span><span class="va">}</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"IOMMU Group </span><span class="va">$g</span><span class="st">: </span><span class="va">$(</span><span class="ex">lspci</span> <span class="at">-nns</span> <span class="va">${d</span><span class="op">##</span><span class="pp">*</span>/<span class="va">})</span><span class="st">"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-V</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The HBA should sit <strong>alone</strong> in its group, or only with its own extra functions (<code>02:00.0</code>, <code>02:00.1</code>, …).</p>
+</section>
+<section id="when-the-group-is-dirty" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="when-the-group-is-dirty"><span class="header-section-number">5.3</span> When the group is dirty</h2>
+<p>If the HBA shares a group with the management NIC, GPU, chipset USB, or the Proxmox boot controller, do not pass that group. The host will lose those devices the moment the VM starts.</p>
+<p>Fix in this order:</p>
+<ol type="1">
+<li>Move the HBA to another PCIe slot (try slot 1).</li>
+<li>Update the motherboard BIOS.</li>
+<li>Last resort on a single-tenant homelab only: add to the kernel command line:</li>
+</ol>
 <pre class="text"><code>pcie_acs_override=downstream,multifunction</code></pre>
-</section>
-<section id="vfio" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="vfio"><span class="header-section-number">10.3</span> vfio</h2>
-<pre class="text"><code># /etc/modprobe.d/vfio.conf
-options vfio-pci ids=1000:0097
-softdep mpt3sas pre: vfio-pci</code></pre>
-<pre class="text"><code># /etc/modprobe.d/blacklist.conf
-blacklist mpt3sas
-blacklist mpt2sas</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">update-initramfs</span> <span class="at">-u</span> <span class="at">-k</span> all</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="vm" class="level2" data-number="10.4">
-<h2 data-number="10.4" class="anchored" data-anchor-id="vm"><span class="header-section-number">10.4</span> VM</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--hostpci0</span> 02:00,pcie=1,rombar=0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>/etc/pve/qemu-server/300.conf</code> fragment:</p>
-<pre class="text"><code>bios: ovmf
-machine: q35
-cpu: host
-balloon: 0
-hostpci0: 0000:02:00,pcie=1,rombar=0</code></pre>
-<p>Replace <code>02:00</code> and <code>1000:0097</code> with your <code>lspci -nn</code> output.</p>
+<p>Then <code>update-grub</code> or <code>proxmox-boot-tool refresh</code> and reboot.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ACS override weakens DMA isolation between devices. Fine on a box only you use. Do not use it on a shared host.</p>
+</div>
+</div>
 
 
 </section>
@@ -891,11 +903,14 @@ hostpci0: 0000:02:00,pcie=1,rombar=0</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./09-troubleshooting.html" class="pagination-link" aria-label="Troubleshooting">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span>
+      <a href="./04-iommu.html" class="pagination-link" aria-label="Enable IOMMU on the Proxmox host">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./06-vfio.html" class="pagination-link" aria-label="Bind the HBA to vfio-pci">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -903,5 +918,5 @@ hostpci0: 0000:02:00,pcie=1,rombar=0</code></pre>
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/10-reference.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/05-identify-hba.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

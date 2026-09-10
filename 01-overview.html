@@ -304,50 +304,62 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-iommu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
+  <a href="./03-install-proxmox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-identify-hba.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
+  <a href="./04-iommu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-vfio.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
+  <a href="./05-identify-hba.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-create-vm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
+  <a href="./06-vfio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-passthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
+  <a href="./07-create-vm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./08-truenas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
+  <a href="./08-passthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09-troubleshooting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
+  <a href="./09-gpu-passthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
+  <a href="./10-truenas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
   </div>
 </li>
     </ul>
@@ -401,6 +413,7 @@ ul.task-list li input[type="checkbox"] {
         ↓
 [ TrueNAS owns the HBA and the data pool ]</code></pre>
 <p>Proxmox boots from its own NVMe or board SATA. TrueNAS boots from a small virtual disk. The HBA and every disk on it belong only to the VM.</p>
+<p>The same host can pass a second device — a discrete GPU — into another VM using the identical BIOS/IOMMU/vfio pipeline; see <a href="09-gpu-passthrough.html" class="quarto-xref"><span>Chapter 9</span></a>. The GPU and the HBA just need to land in separate IOMMU groups.</p>
 </section>
 <section id="why-pass-the-hba-not-individual-disks" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="why-pass-the-hba-not-individual-disks"><span class="header-section-number">1.2</span> Why pass the HBA, not individual disks</h2>
@@ -416,6 +429,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Confirm firmware with <code>sas2flash -list</code> or <code>sas3flash -list</code> — look for <code>(IT)</code></li>
 <li>RAM for the VM: 16 GB is a floor; more if the pool is large</li>
 <li>HBA in a PCIe slot that can land in its own IOMMU group (often slot 1 on consumer boards)</li>
+<li>If also passing a GPU: a board with an iGPU so the host keeps a console, or a plan to run headless (<a href="09-gpu-passthrough.html" class="quarto-xref"><span>Chapter 9</span></a>)</li>
 </ul>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">

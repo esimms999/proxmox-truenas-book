@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>7&nbsp; Pass the HBA into the VM – TrueNAS SCALE on Proxmox</title>
+<title>11&nbsp; Troubleshooting – TrueNAS SCALE on Proxmox</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,8 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./08-truenas.html" rel="next">
-<link href="./06-create-vm.html" rel="prev">
+<link href="./12-reference.html" rel="next">
+<link href="./10-truenas.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -290,7 +290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./07-passthrough.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./11-troubleshooting.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Troubleshooting</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -339,50 +339,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-iommu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
+  <a href="./03-install-proxmox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-identify-hba.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
+  <a href="./04-iommu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-vfio.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
+  <a href="./05-identify-hba.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-create-vm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
+  <a href="./06-vfio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-passthrough.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
+  <a href="./07-create-vm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./08-truenas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
+  <a href="./08-passthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09-troubleshooting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
+  <a href="./09-gpu-passthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
+  <a href="./10-truenas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-troubleshooting.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
   </div>
 </li>
     </ul>
@@ -395,11 +407,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#from-the-proxmox-ui" id="toc-from-the-proxmox-ui" class="nav-link active" data-scroll-target="#from-the-proxmox-ui"><span class="header-section-number">7.1</span> From the Proxmox UI</a></li>
-  <li><a href="#from-the-cli" id="toc-from-the-cli" class="nav-link" data-scroll-target="#from-the-cli"><span class="header-section-number">7.2</span> From the CLI</a></li>
-  <li><a href="#after-start" id="toc-after-start" class="nav-link" data-scroll-target="#after-start"><span class="header-section-number">7.3</span> After start</a></li>
+  <li><a href="#vm-hangs-at-booting-from-hard-disk" id="toc-vm-hangs-at-booting-from-hard-disk" class="nav-link active" data-scroll-target="#vm-hangs-at-booting-from-hard-disk"><span class="header-section-number">11.1</span> VM hangs at “Booting from Hard Disk”</a></li>
+  <li><a href="#iommu-groups-missing-pci-device-not-available" id="toc-iommu-groups-missing-pci-device-not-available" class="nav-link" data-scroll-target="#iommu-groups-missing-pci-device-not-available"><span class="header-section-number">11.2</span> IOMMU groups missing / “PCI device not available”</a></li>
+  <li><a href="#proxmox-still-lists-the-data-disks" id="toc-proxmox-still-lists-the-data-disks" class="nav-link" data-scroll-target="#proxmox-still-lists-the-data-disks"><span class="header-section-number">11.3</span> Proxmox still lists the data disks</a></li>
+  <li><a href="#truenas-sees-the-hba-but-no-disks" id="toc-truenas-sees-the-hba-but-no-disks" class="nav-link" data-scroll-target="#truenas-sees-the-hba-but-no-disks"><span class="header-section-number">11.4</span> TrueNAS sees the HBA but no disks</a></li>
+  <li><a href="#host-dies-when-the-vm-autostarts" id="toc-host-dies-when-the-vm-autostarts" class="nav-link" data-scroll-target="#host-dies-when-the-vm-autostarts"><span class="header-section-number">11.5</span> Host dies when the VM autostarts</a></li>
+  <li><a href="#need-acs-override" id="toc-need-acs-override" class="nav-link" data-scroll-target="#need-acs-override"><span class="header-section-number">11.6</span> Need ACS override?</a></li>
+  <li><a href="#guest-shows-a-generic-display-adapter-not-the-gpu" id="toc-guest-shows-a-generic-display-adapter-not-the-gpu" class="nav-link" data-scroll-target="#guest-shows-a-generic-display-adapter-not-the-gpu"><span class="header-section-number">11.7</span> Guest shows a generic display adapter, not the GPU</a></li>
+  <li><a href="#windows-guest-shows-nvidia-code-43" id="toc-windows-guest-shows-nvidia-code-43" class="nav-link" data-scroll-target="#windows-guest-shows-nvidia-code-43"><span class="header-section-number">11.8</span> Windows guest shows Nvidia Code 43</a></li>
+  <li><a href="#gpu-passthrough-works-once-then-fails-after-a-vm-reboot" id="toc-gpu-passthrough-works-once-then-fails-after-a-vm-reboot" class="nav-link" data-scroll-target="#gpu-passthrough-works-once-then-fails-after-a-vm-reboot"><span class="header-section-number">11.9</span> GPU passthrough works once, then fails after a VM reboot</a></li>
+  <li><a href="#quick-verification-set" id="toc-quick-verification-set" class="nav-link" data-scroll-target="#quick-verification-set"><span class="header-section-number">11.10</span> Quick verification set</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/07-passthrough.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/11-troubleshooting.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -407,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-passthrough" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></h1>
+<h1 class="title"><span id="sec-trouble" class="quarto-section-identifier"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></h1>
 </div>
 
 
@@ -424,30 +443,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="from-the-proxmox-ui" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="from-the-proxmox-ui"><span class="header-section-number">7.1</span> From the Proxmox UI</h2>
-<p>VM → <strong>Hardware</strong> → <strong>Add</strong> → <strong>PCI Device</strong>.</p>
+<section id="vm-hangs-at-booting-from-hard-disk" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="vm-hangs-at-booting-from-hard-disk"><span class="header-section-number">11.1</span> VM hangs at “Booting from Hard Disk”</h2>
+<p>Set <code>rombar=0</code> (uncheck <strong>ROM-Bar</strong>). Disable the slot Option ROM in system BIOS. Some LSI utilities also have “boot from this controller” — turn that off. The VM should boot the virtual OS disk only.</p>
+</section>
+<section id="iommu-groups-missing-pci-device-not-available" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="iommu-groups-missing-pci-device-not-available"><span class="header-section-number">11.2</span> IOMMU groups missing / “PCI device not available”</h2>
+<p>VT-d or AMD-Vi is still off, or the kernel flags did not apply.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/cmdline</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dmesg</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-e</span> DMAR <span class="at">-e</span> IOMMU <span class="at">-e</span> AMD-Vi</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Revisit <a href="02-bios.html" class="quarto-xref"><span>Chapter 2</span></a> and <a href="04-iommu.html" class="quarto-xref"><span>Chapter 4</span></a>.</p>
+</section>
+<section id="proxmox-still-lists-the-data-disks" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="proxmox-still-lists-the-data-disks"><span class="header-section-number">11.3</span> Proxmox still lists the data disks</h2>
+<p>vfio bind failed. <code>lspci -k -s 02:00.0</code> should show <code>vfio-pci</code>. Rebuild initramfs after blacklist changes (<a href="06-vfio.html" class="quarto-xref"><span>Chapter 6</span></a>).</p>
+</section>
+<section id="truenas-sees-the-hba-but-no-disks" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="truenas-sees-the-hba-but-no-disks"><span class="header-section-number">11.4</span> TrueNAS sees the HBA but no disks</h2>
 <ul>
-<li>Device: <code>02:00.0</code>, or the whole <code>02:00</code> if you tick <strong>All Functions</strong></li>
-<li><strong>PCI-Express</strong>: on (<code>pcie=1</code>)</li>
-<li><strong>ROM-Bar</strong>: <strong>off</strong> (<code>rombar=0</code>)</li>
-<li>Primary GPU: off</li>
+<li>Confirm IT firmware, not IR</li>
+<li>Pass <strong>all functions</strong> of the card</li>
+<li>Reseat SFF-8087 / 8643 cables; the card can enumerate with no SAS link</li>
+<li>Check disk power</li>
 </ul>
-<p>ROM-Bar off is the usual fix for a VM that hangs on “Booting from Hard Disk” after an LSI card is added.</p>
 </section>
-<section id="from-the-cli" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="from-the-cli"><span class="header-section-number">7.2</span> From the CLI</h2>
-<p>One function:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--hostpci0</span> 02:00.0,pcie=1,rombar=0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Every function at that address (preferred for HBAs):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--hostpci0</span> 02:00,pcie=1,rombar=0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Do <strong>not</strong> make the HBA a boot device. TrueNAS boots from the virtual OS disk.</p>
+<section id="host-dies-when-the-vm-autostarts" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="host-dies-when-the-vm-autostarts"><span class="header-section-number">11.5</span> Host dies when the VM autostarts</h2>
+<p>The HBA shared an IOMMU group with the management NIC. From the boot menu, drop <code>intel_iommu=on</code> / <code>amd_iommu=on</code> for one boot, turn VM autostart off, fix grouping (<a href="05-identify-hba.html" class="quarto-xref"><span>Chapter 5</span></a>), then re-enable IOMMU.</p>
 </section>
-<section id="after-start" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="after-start"><span class="header-section-number">7.3</span> After start</h2>
-<p>In TrueNAS: <strong>Storage → Disks</strong>. You should see real model names, serials, and SMART. Import an existing pool or create a new one.</p>
-<p>The matching line in <code>/etc/pve/qemu-server/300.conf</code> looks like:</p>
-<pre class="text"><code>hostpci0: 0000:02:00,pcie=1,rombar=0</code></pre>
+<section id="need-acs-override" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="need-acs-override"><span class="header-section-number">11.6</span> Need ACS override?</h2>
+<p>Only after a slot change and a BIOS update still leave a dirty group. Homelab only.</p>
+</section>
+<section id="guest-shows-a-generic-display-adapter-not-the-gpu" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="guest-shows-a-generic-display-adapter-not-the-gpu"><span class="header-section-number">11.7</span> Guest shows a generic display adapter, not the GPU</h2>
+<p>The GPU driver still won on the host, so the guest is stuck with QXL/VGA emulation. Confirm <code>lspci -k -s &lt;addr&gt;</code> shows <code>vfio-pci</code> for <strong>both</strong> the VGA and audio functions (<a href="09-gpu-passthrough.html" class="quarto-xref"><span>Chapter 9</span></a>), and that both vendor:device IDs are on the <code>vfio-pci ids=</code> line.</p>
+</section>
+<section id="windows-guest-shows-nvidia-code-43" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="windows-guest-shows-nvidia-code-43"><span class="header-section-number">11.8</span> Windows guest shows Nvidia Code 43</h2>
+<p>The driver detected virtualization. Hide it with <code>cpu: host,hidden=1</code> (<a href="09-gpu-passthrough.html" class="quarto-xref"><span>Chapter 9</span></a>).</p>
+</section>
+<section id="gpu-passthrough-works-once-then-fails-after-a-vm-reboot" class="level2" data-number="11.9">
+<h2 data-number="11.9" class="anchored" data-anchor-id="gpu-passthrough-works-once-then-fails-after-a-vm-reboot"><span class="header-section-number">11.9</span> GPU passthrough works once, then fails after a VM reboot</h2>
+<p>Likely the AMD reset bug — the card isn’t releasing cleanly. Reboot the host, or look into <code>vendor-reset</code> for your card (<a href="09-gpu-passthrough.html" class="quarto-xref"><span>Chapter 9</span></a>).</p>
+</section>
+<section id="quick-verification-set" class="level2" data-number="11.10">
+<h2 data-number="11.10" class="anchored" data-anchor-id="quick-verification-set"><span class="header-section-number">11.10</span> Quick verification set</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/cmdline</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dmesg</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-e</span> DMAR <span class="at">-e</span> IOMMU <span class="at">-e</span> vfio</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-k</span> <span class="at">-s</span> 02:00.0</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /sys/kernel/iommu_groups</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
@@ -873,13 +918,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./06-create-vm.html" class="pagination-link" aria-label="Create the TrueNAS SCALE VM">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span>
+      <a href="./10-truenas.html" class="pagination-link" aria-label="TrueNAS after passthrough">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./08-truenas.html" class="pagination-link" aria-label="TrueNAS after passthrough">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./12-reference.html" class="pagination-link" aria-label="Command reference">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Command reference</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -888,5 +933,5 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/07-passthrough.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/11-troubleshooting.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

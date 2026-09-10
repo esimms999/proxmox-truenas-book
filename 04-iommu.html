@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; BIOS and UEFI settings – TrueNAS SCALE on Proxmox</title>
+<title>4&nbsp; Enable IOMMU on the Proxmox host – TrueNAS SCALE on Proxmox</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -36,8 +71,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./03-install-proxmox.html" rel="next">
-<link href="./01-overview.html" rel="prev">
+<link href="./05-identify-hba.html" rel="next">
+<link href="./03-install-proxmox.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -255,7 +290,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-bios.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-iommu.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -298,7 +333,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-bios.html" class="sidebar-item-text sidebar-link active">
+  <a href="./02-bios.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></span></a>
   </div>
 </li>
@@ -310,7 +345,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-iommu.html" class="sidebar-item-text sidebar-link">
+  <a href="./04-iommu.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
   </div>
 </li>
@@ -372,11 +407,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#settings-that-matter" id="toc-settings-that-matter" class="nav-link active" data-scroll-target="#settings-that-matter"><span class="header-section-number">2.1</span> Settings that matter</a></li>
-  <li><a href="#where-vendors-hide-iommu" id="toc-where-vendors-hide-iommu" class="nav-link" data-scroll-target="#where-vendors-hide-iommu"><span class="header-section-number">2.2</span> Where vendors hide IOMMU</a></li>
-  <li><a href="#slot-choice" id="toc-slot-choice" class="nav-link" data-scroll-target="#slot-choice"><span class="header-section-number">2.3</span> Slot choice</a></li>
+  <li><a href="#grub" id="toc-grub" class="nav-link active" data-scroll-target="#grub"><span class="header-section-number">4.1</span> GRUB</a></li>
+  <li><a href="#systemd-boot" id="toc-systemd-boot" class="nav-link" data-scroll-target="#systemd-boot"><span class="header-section-number">4.2</span> systemd-boot</a></li>
+  <li><a href="#load-vfio-at-boot" id="toc-load-vfio-at-boot" class="nav-link" data-scroll-target="#load-vfio-at-boot"><span class="header-section-number">4.3</span> Load VFIO at boot</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/02-bios.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/04-iommu.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -384,7 +419,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-bios" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></span></h1>
+<h1 class="title"><span id="sec-iommu" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></h1>
 </div>
 
 
@@ -401,91 +436,28 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Reboot the physical host and enter setup (Del, F2, or F10). Names vary by vendor. Enable every row that exists.</p>
-<section id="settings-that-matter" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="settings-that-matter"><span class="header-section-number">2.1</span> Settings that matter</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 40%">
-<col style="width: 36%">
-<col style="width: 22%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Setting</th>
-<th>Set to</th>
-<th>Why</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Intel <strong>VT-x</strong> or AMD <strong>SVM / AMD-V</strong></td>
-<td>Enabled</td>
-<td>Basic virtualization. Not IOMMU.</td>
-</tr>
-<tr class="even">
-<td>Intel <strong>VT-d</strong> or AMD <strong>AMD-Vi / IOMMU</strong></td>
-<td>Enabled</td>
-<td>Required for PCI passthrough.</td>
-</tr>
-<tr class="odd">
-<td><strong>SR-IOV</strong></td>
-<td>Enabled if present</td>
-<td>Not required for an HBA.</td>
-</tr>
-<tr class="even">
-<td><strong>Above 4G Decoding</strong></td>
-<td>Enabled</td>
-<td>Required for large BAR allocations; more important when also passing a GPU, but harmless for an HBA-only build.</td>
-</tr>
-<tr class="odd">
-<td><strong>Resizable BAR</strong> (Intel)</td>
-<td>Enabled if also passing a GPU, otherwise off</td>
-<td>Recommended alongside Above 4G Decoding for modern GPUs; leave off for an HBA-only build.</td>
-</tr>
-<tr class="even">
-<td><strong>Resizable BAR</strong> (AMD)</td>
-<td>Disabled</td>
-<td>Known to cause boot/stability issues on several AMD platforms — leave off even when also passing a GPU.</td>
-</tr>
-<tr class="odd">
-<td><strong>CSM / Legacy boot</strong></td>
-<td>Off if Proxmox is UEFI</td>
-<td>Stay in UEFI end to end.</td>
-</tr>
-<tr class="even">
-<td><strong>Secure Boot</strong></td>
-<td>Off (simplest)</td>
-<td>Avoids vfio module signing fights.</td>
-</tr>
-<tr class="odd">
-<td><strong>Fast Boot</strong></td>
-<td>Off</td>
-<td>Fast Boot can skip device init steps the installer and IOMMU setup rely on.</td>
-</tr>
-<tr class="even">
-<td><strong>PXE network boot</strong></td>
-<td>Off unless you need it</td>
-<td>One less legacy boot path to fight with UEFI/OVMF.</td>
-</tr>
-<tr class="odd">
-<td><strong>iGPU / Integrated Graphics</strong></td>
-<td>Disable if the VM hangs after adding the HBA</td>
-<td>Common Intel hang fix.</td>
-</tr>
-<tr class="even">
-<td>Slot <strong>Option ROM / OPROM</strong> for the HBA</td>
-<td>Disabled if available</td>
-<td>Stops the card from trying to boot the host.</td>
-</tr>
-<tr class="odd">
-<td>Other <strong>Option ROMs</strong> (NIC, RAID controller, etc.)</td>
-<td>Disabled if you see detection errors</td>
-<td>Same failure mode as the HBA’s Option ROM, just on a different slot.</td>
-</tr>
-</tbody>
-</table>
-<p>Save and reboot into Proxmox.</p>
+<p>SSH into the host. See how it boots:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">proxmox-boot-tool</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="grub" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="grub"><span class="header-section-number">4.1</span> GRUB</h2>
+<p>Typical on BIOS installs and some older UEFI installs. Edit <code>/etc/default/grub</code>.</p>
+<p>Intel:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">GRUB_CMDLINE_LINUX_DEFAULT</span><span class="op">=</span><span class="st">"quiet intel_iommu=on iommu=pt"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>AMD (modern kernels often enable AMD-Vi without the extra flag; keeping it is fine):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">GRUB_CMDLINE_LINUX_DEFAULT</span><span class="op">=</span><span class="st">"quiet amd_iommu=on iommu=pt"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Apply:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">update-grub</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="systemd-boot" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="systemd-boot"><span class="header-section-number">4.2</span> systemd-boot</h2>
+<p>Typical on current UEFI Proxmox 8/9. Edit <code>/etc/kernel/cmdline</code> and <strong>append</strong> to the existing line. Do not delete <code>root=</code>.</p>
+<p>Intel:</p>
+<pre class="text"><code>intel_iommu=on iommu=pt</code></pre>
+<p>AMD:</p>
+<pre class="text"><code>amd_iommu=on iommu=pt</code></pre>
+<p>Apply:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">proxmox-boot-tool</span> refresh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>iommu=pt</code> is passthrough mode: only devices given to VMs pay IOMMU cost.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -496,33 +468,21 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Resizable BAR splits by vendor: Intel boards generally tolerate it and benefit when a GPU is passed through, while several AMD boards have reported crashes or failed boots with it enabled — regardless of whether a GPU is involved. When in doubt, leave it off and rely on Above 4G Decoding alone; only test enabling Resizable BAR on Intel systems after everything else is stable.</p>
+<p>On Proxmox kernels 6.8+, Intel often turns IOMMU on without <code>intel_iommu=on</code>. Keep the flag anyway so the intent is obvious in <code>/proc/cmdline</code>.</p>
 </div>
 </div>
 </section>
-<section id="where-vendors-hide-iommu" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="where-vendors-hide-iommu"><span class="header-section-number">2.2</span> Where vendors hide IOMMU</h2>
-<ul>
-<li><strong>Intel:</strong> Advanced → CPU Configuration, System Agent, or Chipset. Labels: <em>VT-d</em>, <em>Intel VT for Directed I/O</em>, <em>IOMMU</em>.</li>
-<li><strong>AMD:</strong> Advanced → AMD CBS → NBIO, or next to <em>SVM Mode</em>. Labels: <em>IOMMU</em>, <em>AMD-Vi</em>.</li>
-</ul>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>VT-x / SVM alone is not enough. Without VT-d or AMD-Vi, <code>/sys/kernel/iommu_groups</code> stays empty and Proxmox will refuse the PCI device.</p>
-</div>
-</div>
-</section>
-<section id="slot-choice" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="slot-choice"><span class="header-section-number">2.3</span> Slot choice</h2>
-<p>On many B450/B550/X570 boards the HBA only isolates cleanly in the <strong>first full-length PCIe slot</strong>. If <a href="05-identify-hba.html" class="quarto-xref"><span>Chapter 5</span></a> shows a shared group, move the card before you add ACS override.</p>
+<section id="load-vfio-at-boot" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="load-vfio-at-boot"><span class="header-section-number">4.3</span> Load VFIO at boot</h2>
+<p>Add to <code>/etc/modules</code>:</p>
+<pre class="text"><code>vfio
+vfio_iommu_type1
+vfio_pci</code></pre>
+<p><code>vfio_virqfd</code> was folded into other modules on newer kernels. Skip it if <code>modprobe</code> complains.</p>
+<p>Reboot, then check:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dmesg</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-e</span> DMAR <span class="at">-e</span> IOMMU <span class="at">-e</span> AMD-Vi</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/cmdline</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You want DMAR or AMD-Vi tables found, “IOMMU enabled”, and the flags in the command line.</p>
 
 
 </section>
@@ -948,13 +908,13 @@ Important
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01-overview.html" class="pagination-link" aria-label="Overview">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Overview</span></span>
+      <a href="./03-install-proxmox.html" class="pagination-link" aria-label="Installing Proxmox VE">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./03-install-proxmox.html" class="pagination-link" aria-label="Installing Proxmox VE">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./05-identify-hba.html" class="pagination-link" aria-label="Identify the HBA and IOMMU group">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -963,5 +923,5 @@ Important
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/02-bios.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/04-iommu.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

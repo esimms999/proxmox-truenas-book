@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; Enable IOMMU on the Proxmox host – TrueNAS SCALE on Proxmox</title>
+<title>8&nbsp; Pass the HBA into the VM – TrueNAS SCALE on Proxmox</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,8 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./04-identify-hba.html" rel="next">
-<link href="./02-bios.html" rel="prev">
+<link href="./09-gpu-passthrough.html" rel="next">
+<link href="./07-create-vm.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -290,7 +290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-iommu.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./08-passthrough.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -339,50 +339,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-iommu.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
+  <a href="./03-install-proxmox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-identify-hba.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
+  <a href="./04-iommu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-vfio.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
+  <a href="./05-identify-hba.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-create-vm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
+  <a href="./06-vfio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-passthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
+  <a href="./07-create-vm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./08-truenas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
+  <a href="./08-passthrough.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09-troubleshooting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
+  <a href="./09-gpu-passthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10-reference.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
+  <a href="./10-truenas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
   </div>
 </li>
     </ul>
@@ -395,11 +407,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#grub" id="toc-grub" class="nav-link active" data-scroll-target="#grub"><span class="header-section-number">3.1</span> GRUB</a></li>
-  <li><a href="#systemd-boot" id="toc-systemd-boot" class="nav-link" data-scroll-target="#systemd-boot"><span class="header-section-number">3.2</span> systemd-boot</a></li>
-  <li><a href="#load-vfio-at-boot" id="toc-load-vfio-at-boot" class="nav-link" data-scroll-target="#load-vfio-at-boot"><span class="header-section-number">3.3</span> Load VFIO at boot</a></li>
+  <li><a href="#from-the-proxmox-ui" id="toc-from-the-proxmox-ui" class="nav-link active" data-scroll-target="#from-the-proxmox-ui"><span class="header-section-number">8.1</span> From the Proxmox UI</a></li>
+  <li><a href="#from-the-cli" id="toc-from-the-cli" class="nav-link" data-scroll-target="#from-the-cli"><span class="header-section-number">8.2</span> From the CLI</a></li>
+  <li><a href="#after-start" id="toc-after-start" class="nav-link" data-scroll-target="#after-start"><span class="header-section-number">8.3</span> After start</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/03-iommu.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/08-passthrough.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -407,7 +419,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-iommu" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></h1>
+<h1 class="title"><span id="sec-passthrough" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></h1>
 </div>
 
 
@@ -424,28 +436,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>SSH into the host. See how it boots:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">proxmox-boot-tool</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="grub" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="grub"><span class="header-section-number">3.1</span> GRUB</h2>
-<p>Typical on BIOS installs and some older UEFI installs. Edit <code>/etc/default/grub</code>.</p>
-<p>Intel:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">GRUB_CMDLINE_LINUX_DEFAULT</span><span class="op">=</span><span class="st">"quiet intel_iommu=on iommu=pt"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>AMD (modern kernels often enable AMD-Vi without the extra flag; keeping it is fine):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">GRUB_CMDLINE_LINUX_DEFAULT</span><span class="op">=</span><span class="st">"quiet amd_iommu=on iommu=pt"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Apply:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">update-grub</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="from-the-proxmox-ui" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="from-the-proxmox-ui"><span class="header-section-number">8.1</span> From the Proxmox UI</h2>
+<p>VM → <strong>Hardware</strong> → <strong>Add</strong> → <strong>PCI Device</strong>.</p>
+<ul>
+<li>Device: <code>02:00.0</code>, or the whole <code>02:00</code> if you tick <strong>All Functions</strong></li>
+<li><strong>PCI-Express</strong>: on (<code>pcie=1</code>)</li>
+<li><strong>ROM-Bar</strong>: <strong>off</strong> (<code>rombar=0</code>)</li>
+<li>Primary GPU: off</li>
+</ul>
+<p>ROM-Bar off is the usual fix for a VM that hangs on “Booting from Hard Disk” after an LSI card is added.</p>
 </section>
-<section id="systemd-boot" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="systemd-boot"><span class="header-section-number">3.2</span> systemd-boot</h2>
-<p>Typical on current UEFI Proxmox 8/9. Edit <code>/etc/kernel/cmdline</code> and <strong>append</strong> to the existing line. Do not delete <code>root=</code>.</p>
-<p>Intel:</p>
-<pre class="text"><code>intel_iommu=on iommu=pt</code></pre>
-<p>AMD:</p>
-<pre class="text"><code>amd_iommu=on iommu=pt</code></pre>
-<p>Apply:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">proxmox-boot-tool</span> refresh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>iommu=pt</code> is passthrough mode: only devices given to VMs pay IOMMU cost.</p>
+<section id="from-the-cli" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="from-the-cli"><span class="header-section-number">8.2</span> From the CLI</h2>
+<p>One function:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--hostpci0</span> 02:00.0,pcie=1,rombar=0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Every function at that address (preferred for HBAs):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--hostpci0</span> 02:00,pcie=1,rombar=0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Do <strong>not</strong> make the HBA a boot device. TrueNAS boots from the virtual OS disk.</p>
+</section>
+<section id="after-start" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="after-start"><span class="header-section-number">8.3</span> After start</h2>
+<p>In TrueNAS: <strong>Storage → Disks</strong>. You should see real model names, serials, and SMART. Import an existing pool or create a new one.</p>
+<p>The matching line in <code>/etc/pve/qemu-server/300.conf</code> looks like:</p>
+<pre class="text"><code>hostpci0: 0000:02:00,pcie=1,rombar=0</code></pre>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -456,21 +470,9 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>On Proxmox kernels 6.8+, Intel often turns IOMMU on without <code>intel_iommu=on</code>. Keep the flag anyway so the intent is obvious in <code>/proc/cmdline</code>.</p>
+<p>Passing a GPU instead of an HBA? The mechanics are the same UI/CLI flow, but the flag values differ — see <a href="09-gpu-passthrough.html" class="quarto-xref"><span>Chapter 9</span></a>.</p>
 </div>
 </div>
-</section>
-<section id="load-vfio-at-boot" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="load-vfio-at-boot"><span class="header-section-number">3.3</span> Load VFIO at boot</h2>
-<p>Add to <code>/etc/modules</code>:</p>
-<pre class="text"><code>vfio
-vfio_iommu_type1
-vfio_pci</code></pre>
-<p><code>vfio_virqfd</code> was folded into other modules on newer kernels. Skip it if <code>modprobe</code> complains.</p>
-<p>Reboot, then check:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dmesg</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-e</span> DMAR <span class="at">-e</span> IOMMU <span class="at">-e</span> AMD-Vi</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /proc/cmdline</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You want DMAR or AMD-Vi tables found, “IOMMU enabled”, and the flags in the command line.</p>
 
 
 </section>
@@ -896,13 +898,13 @@ vfio_pci</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02-bios.html" class="pagination-link" aria-label="BIOS and UEFI settings">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></span>
+      <a href="./07-create-vm.html" class="pagination-link" aria-label="Create the TrueNAS SCALE VM">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./04-identify-hba.html" class="pagination-link" aria-label="Identify the HBA and IOMMU group">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./09-gpu-passthrough.html" class="pagination-link" aria-label="GPU passthrough">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -911,5 +913,5 @@ vfio_pci</code></pre>
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/03-iommu.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/08-passthrough.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

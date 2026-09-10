@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; BIOS and UEFI settings – TrueNAS SCALE on Proxmox</title>
+<title>9&nbsp; GPU passthrough – TrueNAS SCALE on Proxmox</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -36,8 +71,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./03-install-proxmox.html" rel="next">
-<link href="./01-overview.html" rel="prev">
+<link href="./10-truenas.html" rel="next">
+<link href="./08-passthrough.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -255,7 +290,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-bios.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-gpu-passthrough.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -298,7 +333,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-bios.html" class="sidebar-item-text sidebar-link active">
+  <a href="./02-bios.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></span></a>
   </div>
 </li>
@@ -340,7 +375,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09-gpu-passthrough.html" class="sidebar-item-text sidebar-link">
+  <a href="./09-gpu-passthrough.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span></a>
   </div>
 </li>
@@ -372,11 +407,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#settings-that-matter" id="toc-settings-that-matter" class="nav-link active" data-scroll-target="#settings-that-matter"><span class="header-section-number">2.1</span> Settings that matter</a></li>
-  <li><a href="#where-vendors-hide-iommu" id="toc-where-vendors-hide-iommu" class="nav-link" data-scroll-target="#where-vendors-hide-iommu"><span class="header-section-number">2.2</span> Where vendors hide IOMMU</a></li>
-  <li><a href="#slot-choice" id="toc-slot-choice" class="nav-link" data-scroll-target="#slot-choice"><span class="header-section-number">2.3</span> Slot choice</a></li>
+  <li><a href="#identify-the-gpu-and-its-group" id="toc-identify-the-gpu-and-its-group" class="nav-link active" data-scroll-target="#identify-the-gpu-and-its-group"><span class="header-section-number">9.1</span> Identify the GPU and its group</a></li>
+  <li><a href="#free-up-a-console-for-the-host" id="toc-free-up-a-console-for-the-host" class="nav-link" data-scroll-target="#free-up-a-console-for-the-host"><span class="header-section-number">9.2</span> Free up a console for the host</a></li>
+  <li><a href="#bind-the-gpu-to-vfio-pci" id="toc-bind-the-gpu-to-vfio-pci" class="nav-link" data-scroll-target="#bind-the-gpu-to-vfio-pci"><span class="header-section-number">9.3</span> Bind the GPU to vfio-pci</a></li>
+  <li><a href="#pass-the-gpu-into-the-vm" id="toc-pass-the-gpu-into-the-vm" class="nav-link" data-scroll-target="#pass-the-gpu-into-the-vm"><span class="header-section-number">9.4</span> Pass the GPU into the VM</a></li>
+  <li><a href="#known-quirks" id="toc-known-quirks" class="nav-link" data-scroll-target="#known-quirks"><span class="header-section-number">9.5</span> Known quirks</a></li>
+  <li><a href="#verify" id="toc-verify" class="nav-link" data-scroll-target="#verify"><span class="header-section-number">9.6</span> Verify</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/02-bios.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/09-gpu-passthrough.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -384,7 +422,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-bios" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></span></h1>
+<h1 class="title"><span id="sec-gpu" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span></h1>
 </div>
 
 
@@ -401,128 +439,86 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Reboot the physical host and enter setup (Del, F2, or F10). Names vary by vendor. Enable every row that exists.</p>
-<section id="settings-that-matter" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="settings-that-matter"><span class="header-section-number">2.1</span> Settings that matter</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 40%">
-<col style="width: 36%">
-<col style="width: 22%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Setting</th>
-<th>Set to</th>
-<th>Why</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Intel <strong>VT-x</strong> or AMD <strong>SVM / AMD-V</strong></td>
-<td>Enabled</td>
-<td>Basic virtualization. Not IOMMU.</td>
-</tr>
-<tr class="even">
-<td>Intel <strong>VT-d</strong> or AMD <strong>AMD-Vi / IOMMU</strong></td>
-<td>Enabled</td>
-<td>Required for PCI passthrough.</td>
-</tr>
-<tr class="odd">
-<td><strong>SR-IOV</strong></td>
-<td>Enabled if present</td>
-<td>Not required for an HBA.</td>
-</tr>
-<tr class="even">
-<td><strong>Above 4G Decoding</strong></td>
-<td>Enabled</td>
-<td>Required for large BAR allocations; more important when also passing a GPU, but harmless for an HBA-only build.</td>
-</tr>
-<tr class="odd">
-<td><strong>Resizable BAR</strong> (Intel)</td>
-<td>Enabled if also passing a GPU, otherwise off</td>
-<td>Recommended alongside Above 4G Decoding for modern GPUs; leave off for an HBA-only build.</td>
-</tr>
-<tr class="even">
-<td><strong>Resizable BAR</strong> (AMD)</td>
-<td>Disabled</td>
-<td>Known to cause boot/stability issues on several AMD platforms — leave off even when also passing a GPU.</td>
-</tr>
-<tr class="odd">
-<td><strong>CSM / Legacy boot</strong></td>
-<td>Off if Proxmox is UEFI</td>
-<td>Stay in UEFI end to end.</td>
-</tr>
-<tr class="even">
-<td><strong>Secure Boot</strong></td>
-<td>Off (simplest)</td>
-<td>Avoids vfio module signing fights.</td>
-</tr>
-<tr class="odd">
-<td><strong>Fast Boot</strong></td>
-<td>Off</td>
-<td>Fast Boot can skip device init steps the installer and IOMMU setup rely on.</td>
-</tr>
-<tr class="even">
-<td><strong>PXE network boot</strong></td>
-<td>Off unless you need it</td>
-<td>One less legacy boot path to fight with UEFI/OVMF.</td>
-</tr>
-<tr class="odd">
-<td><strong>iGPU / Integrated Graphics</strong></td>
-<td>Disable if the VM hangs after adding the HBA</td>
-<td>Common Intel hang fix.</td>
-</tr>
-<tr class="even">
-<td>Slot <strong>Option ROM / OPROM</strong> for the HBA</td>
-<td>Disabled if available</td>
-<td>Stops the card from trying to boot the host.</td>
-</tr>
-<tr class="odd">
-<td>Other <strong>Option ROMs</strong> (NIC, RAID controller, etc.)</td>
-<td>Disabled if you see detection errors</td>
-<td>Same failure mode as the HBA’s Option ROM, just on a different slot.</td>
-</tr>
-</tbody>
-</table>
-<p>Save and reboot into Proxmox.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Resizable BAR splits by vendor: Intel boards generally tolerate it and benefit when a GPU is passed through, while several AMD boards have reported crashes or failed boots with it enabled — regardless of whether a GPU is involved. When in doubt, leave it off and rely on Above 4G Decoding alone; only test enabling Resizable BAR on Intel systems after everything else is stable.</p>
-</div>
-</div>
+<p>A second common passthrough target on the same host is a discrete GPU — for a Windows gaming VM, a transcode/AI VM, or anything that needs direct hardware acceleration. The BIOS, IOMMU, and vfio groundwork from <a href="02-bios.html" class="quarto-xref"><span>Chapter 2</span></a>, <a href="04-iommu.html" class="quarto-xref"><span>Chapter 4</span></a>, and <a href="05-identify-hba.html" class="quarto-xref"><span>Chapter 5</span></a> is identical; this chapter covers what’s different for a GPU versus the HBA in <a href="06-vfio.html" class="quarto-xref"><span>Chapter 6</span></a> and <a href="08-passthrough.html" class="quarto-xref"><span>Chapter 8</span></a>.</p>
+<section id="identify-the-gpu-and-its-group" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="identify-the-gpu-and-its-group"><span class="header-section-number">9.1</span> Identify the GPU and its group</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-nn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-iE</span> <span class="st">'vga|3d|display'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre class="text"><code>01:00.0 VGA compatible controller [0300]: NVIDIA Corporation ... [10de:2504]
+01:00.1 Audio device [0403]: NVIDIA Corporation ... [10de:228e]</code></pre>
+<p>A discrete GPU is almost always a <strong>multi-function</strong> device: the VGA function and its HDMI/DP audio function share one IOMMU group. Pass both together — check the group with the same loop from <a href="05-identify-hba.html" class="quarto-xref"><span>Chapter 5</span></a>.</p>
 </section>
-<section id="where-vendors-hide-iommu" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="where-vendors-hide-iommu"><span class="header-section-number">2.2</span> Where vendors hide IOMMU</h2>
+<section id="free-up-a-console-for-the-host" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="free-up-a-console-for-the-host"><span class="header-section-number">9.2</span> Free up a console for the host</h2>
+<p>If the discrete GPU is the only display adapter, the host needs another way to show a console once the card is handed to a VM:</p>
 <ul>
-<li><strong>Intel:</strong> Advanced → CPU Configuration, System Agent, or Chipset. Labels: <em>VT-d</em>, <em>Intel VT for Directed I/O</em>, <em>IOMMU</em>.</li>
-<li><strong>AMD:</strong> Advanced → AMD CBS → NBIO, or next to <em>SVM Mode</em>. Labels: <em>IOMMU</em>, <em>AMD-Vi</em>.</li>
+<li>Prefer a board with an <strong>iGPU</strong> and set it as the primary/boot display in BIOS (see the iGPU row in <a href="02-bios.html" class="quarto-xref"><span>Chapter 2</span></a>), leaving the discrete card untouched at boot.</li>
+<li>Otherwise, plan to manage Proxmox entirely over SSH/the web UI after the card is bound to vfio.</li>
 </ul>
-<div class="callout callout-style-default callout-important callout-titled">
+</section>
+<section id="bind-the-gpu-to-vfio-pci" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="bind-the-gpu-to-vfio-pci"><span class="header-section-number">9.3</span> Bind the GPU to vfio-pci</h2>
+<p>Same mechanism as the HBA, but blacklist the GPU driver instead of the SAS driver:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"options vfio-pci ids=10de:2504,10de:228e"</span> <span class="op">&gt;</span> /etc/modprobe.d/vfio.conf</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"blacklist nouveau"</span> <span class="op">&gt;&gt;</span> /etc/modprobe.d/blacklist.conf</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"blacklist nvidia"</span> <span class="op">&gt;&gt;</span> /etc/modprobe.d/blacklist.conf</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"blacklist amdgpu"</span> <span class="op">&gt;&gt;</span> /etc/modprobe.d/blacklist.conf</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"blacklist radeon"</span> <span class="op">&gt;&gt;</span> /etc/modprobe.d/blacklist.conf</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">update-initramfs</span> <span class="at">-u</span> <span class="at">-k</span> all</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">reboot</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>List both vendor:device IDs (VGA and audio function) on the <code>vfio-pci ids=</code> line. Only blacklist the driver family that matches your card — leave the other vendor’s driver alone.</p>
+<p>After reboot:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-k</span> <span class="at">-s</span> 01:00.0</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-k</span> <span class="at">-s</span> 01:00.1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Both should show <code>Kernel driver in use: vfio-pci</code>. If the GPU driver still wins the race, add a softdep the same way as <a href="06-vfio.html" class="quarto-xref"><span>Chapter 6</span></a>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"softdep nvidia pre: vfio-pci"</span> <span class="op">&gt;&gt;</span> /etc/modprobe.d/vfio.conf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="pass-the-gpu-into-the-vm" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="pass-the-gpu-into-the-vm"><span class="header-section-number">9.4</span> Pass the GPU into the VM</h2>
+<p>From the Proxmox UI: VM → <strong>Hardware</strong> → <strong>Add</strong> → <strong>PCI Device</strong>, tick <strong>All Functions</strong> so the VGA and audio functions move together.</p>
+<p>From the CLI:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--hostpci0</span> 01:00,pcie=1,x-vga=0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Notes on the flags, which differ from the HBA case in <a href="08-passthrough.html" class="quarto-xref"><span>Chapter 8</span></a>:</p>
+<ul>
+<li><strong>ROM-Bar</strong>: leave <strong>on</strong> (default) for most GPUs so the guest can read the card’s own VBIOS. Only set <code>rombar=0</code> with a <code>romfile=</code> (a VBIOS dump for that exact card) if the guest reports a black screen or Code 43 — this is common with some consumer Nvidia cards.</li>
+<li><strong>x-vga</strong>: set <code>x-vga=1</code> only if this GPU is meant to be the VM’s primary display shown in the Proxmox console framebuffer. For remote-desktop/headless use (RDP, Sunshine/Moonlight, transcoding), leave it <code>0</code>.</li>
+<li><strong>Primary GPU</strong> toggle in the UI mirrors <code>x-vga</code> — leave it off unless you need the boot-time framebuffer.</li>
+</ul>
+</section>
+<section id="known-quirks" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="known-quirks"><span class="header-section-number">9.5</span> Known quirks</h2>
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Important
+Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>VT-x / SVM alone is not enough. Without VT-d or AMD-Vi, <code>/sys/kernel/iommu_groups</code> stays empty and Proxmox will refuse the PCI device.</p>
+<p><strong>Nvidia “Code 43” in a Windows guest</strong>: Nvidia consumer drivers detect they’re in a VM and disable themselves. Hide the hypervisor from the guest:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--cpu</span> host,hidden=1,flags=+pcid</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Older Proxmox: add <code>args: -cpu host,kvm=off</code> to <code>/etc/pve/qemu-server/300.conf</code> instead.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>AMD reset bug</strong>: some AMD cards don’t reset cleanly when the VM stops or reboots, leaving the GPU unusable until the host reboots. Look up whether your specific card/driver combination needs the <code>vendor-reset</code> kernel module before relying on VM restarts.</p>
 </div>
 </div>
 </section>
-<section id="slot-choice" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="slot-choice"><span class="header-section-number">2.3</span> Slot choice</h2>
-<p>On many B450/B550/X570 boards the HBA only isolates cleanly in the <strong>first full-length PCIe slot</strong>. If <a href="05-identify-hba.html" class="quarto-xref"><span>Chapter 5</span></a> shows a shared group, move the card before you add ACS override.</p>
+<section id="verify" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="verify"><span class="header-section-number">9.6</span> Verify</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="at">-k</span> <span class="at">-s</span> 01:00.0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then boot the VM and confirm the guest OS installs the real GPU driver and shows the card in Device Manager / <code>nvidia-smi</code> / <code>rocm-smi</code>, not a generic QXL/VGA adapter.</p>
 
 
 </section>
@@ -948,13 +944,13 @@ Important
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01-overview.html" class="pagination-link" aria-label="Overview">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Overview</span></span>
+      <a href="./08-passthrough.html" class="pagination-link" aria-label="Pass the HBA into the VM">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./03-install-proxmox.html" class="pagination-link" aria-label="Installing Proxmox VE">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./10-truenas.html" class="pagination-link" aria-label="TrueNAS after passthrough">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -963,5 +959,5 @@ Important
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/02-bios.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/09-gpu-passthrough.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
