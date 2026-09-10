@@ -10,3 +10,6 @@ quarto publish gh-pages
 ```
 
 `project.type` is `book`, which Quarto builds as a multi-page HTML site with numbered chapters, search, and sidebar. PDF and EPUB formats are also declared in `_quarto.yml`.
+
+- Website: https://esimms999.github.io/proxmox-truenas-book/
+- PDF: https://esimms999.github.io/proxmox-truenas-book/TrueNAS-SCALE-on-Proxmox.pdf

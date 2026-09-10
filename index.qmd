@@ -6,7 +6,7 @@ That is the layout iXsystems still recommends for production data: the hyperviso
 
 Use it as:
 
-- a **Quarto book** (numbered chapters, cross-references, PDF/EPUB)
+- a **Quarto book** (numbered chapters, cross-references, PDF/EPUB) — [download the PDF](TrueNAS-SCALE-on-Proxmox.pdf)
 - a **website** (`quarto render` → `_book/index.html`, then publish with `quarto publish`)
 
 ## How to build
