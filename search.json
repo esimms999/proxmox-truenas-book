@@ -1,0 +1,462 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "TrueNAS SCALE on Proxmox",
+    "section": "",
+    "text": "Preface\nThis book is a working runbook for running TrueNAS SCALE as a VM on a Proxmox VE host, with the data disks attached through a dedicated HBA in IT mode passed through to the guest.\nThat is the layout iXsystems still recommends for production data: the hypervisor owns its own boot disk; TrueNAS owns the storage controller and the pool.\nUse it as:",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-build",
+    "href": "index.html#how-to-build",
+    "title": "TrueNAS SCALE on Proxmox",
+    "section": "How to build",
+    "text": "How to build\nIn RStudio: File → Open Project on this folder, then Render Book.\nFrom a terminal in this directory:\nquarto preview\nquarto render\nquarto publish gh-pages",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#scope",
+    "href": "index.html#scope",
+    "title": "TrueNAS SCALE on Proxmox",
+    "section": "Scope",
+    "text": "Scope\nChapters walk the host from a cold BIOS through IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line, and the failures that usually show up after the HBA is attached.\nCommands assume a current Proxmox VE 8/9 host and TrueNAS SCALE 24.10 / 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own lspci.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "01-overview.html",
+    "href": "01-overview.html",
+    "title": "1  Overview",
+    "section": "",
+    "text": "1.1 Target architecture\nProxmox boots from its own NVMe or board SATA. TrueNAS boots from a small virtual disk. The HBA and every disk on it belong only to the VM.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "01-overview.html#target-architecture",
+    "href": "01-overview.html#target-architecture",
+    "title": "1  Overview",
+    "section": "",
+    "text": "[ motherboard BIOS: VT-x/SVM + VT-d/AMD-Vi ]\n        ↓\n[ Proxmox kernel: intel/amd_iommu=on iommu=pt + vfio ]\n        ↓\n[ HBA bound to vfio-pci, blacklisted from host SAS driver ]\n        ↓\n[ TrueNAS VM: q35 + OVMF + hostpci0 ...,pcie=1,rombar=0 ]\n        ↓\n[ TrueNAS owns the HBA and the data pool ]",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "01-overview.html#why-pass-the-hba-not-individual-disks",
+    "href": "01-overview.html#why-pass-the-hba-not-individual-disks",
+    "title": "1  Overview",
+    "section": "1.2 Why pass the HBA, not individual disks",
+    "text": "1.2 Why pass the HBA, not individual disks\nVirtual disks and “passthrough by serial” sit behind the hypervisor. ZFS then cannot trust SMART, cache flush, or device identity the way it can on bare metal. Passing the entire controller gives TrueNAS the same view it would have on metal: serials, SMART, resilver, and disk replace.\nDo not put the Proxmox boot drive on that HBA.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "01-overview.html#hardware-checklist",
+    "href": "01-overview.html#hardware-checklist",
+    "title": "1  Overview",
+    "section": "1.3 Hardware checklist",
+    "text": "1.3 Hardware checklist\n\nCPU and board with IOMMU: Intel VT-d or AMD AMD-Vi\nDedicated HBA flashed to IT mode (not IR/RAID)\nCards that behave well: LSI/Broadcom 9207-8i, 9300-8i, 9400-8i, Dell H310 in IT mode\nConfirm firmware with sas2flash -list or sas3flash -list — look for (IT)\nRAM for the VM: 16 GB is a floor; more if the pool is large\nHBA in a PCIe slot that can land in its own IOMMU group (often slot 1 on consumer boards)\n\n\n\n\n\n\n\nWarning\n\n\n\nIR/RAID firmware hides disks behind a RAID abstraction. ZFS needs raw devices. Flash IT mode before you pass the card through.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "02-bios.html",
+    "href": "02-bios.html",
+    "title": "2  BIOS and UEFI settings",
+    "section": "",
+    "text": "2.1 Settings that matter\nReboot the physical host and enter setup (Del, F2, or F10). Names vary by vendor. Enable every row that exists.\nSave and reboot into Proxmox.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>BIOS and UEFI settings</span>"
+    ]
+  },
+  {
+    "objectID": "02-bios.html#settings-that-matter",
+    "href": "02-bios.html#settings-that-matter",
+    "title": "2  BIOS and UEFI settings",
+    "section": "",
+    "text": "Setting\nSet to\nWhy\n\n\n\n\nIntel VT-x or AMD SVM / AMD-V\nEnabled\nBasic virtualization. Not IOMMU.\n\n\nIntel VT-d or AMD AMD-Vi / IOMMU\nEnabled\nRequired for PCI passthrough.\n\n\nSR-IOV\nEnabled if present\nNot required for an HBA.\n\n\nAbove 4G Decoding\nEnabled\nMore important for GPUs; enable anyway.\n\n\nResizable BAR\nOff unless you also pass a GPU\nCan confuse some HBAs.\n\n\nCSM / Legacy boot\nOff if Proxmox is UEFI\nStay in UEFI end to end.\n\n\nSecure Boot\nOff (simplest)\nAvoids vfio module signing fights.\n\n\niGPU / Integrated Graphics\nDisable if the VM hangs after adding the HBA\nCommon Intel hang fix.\n\n\nSlot Option ROM / OPROM for the HBA\nDisabled if available\nStops the card from trying to boot the host.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>BIOS and UEFI settings</span>"
+    ]
+  },
+  {
+    "objectID": "02-bios.html#where-vendors-hide-iommu",
+    "href": "02-bios.html#where-vendors-hide-iommu",
+    "title": "2  BIOS and UEFI settings",
+    "section": "2.2 Where vendors hide IOMMU",
+    "text": "2.2 Where vendors hide IOMMU\n\nIntel: Advanced → CPU Configuration, System Agent, or Chipset. Labels: VT-d, Intel VT for Directed I/O, IOMMU.\nAMD: Advanced → AMD CBS → NBIO, or next to SVM Mode. Labels: IOMMU, AMD-Vi.\n\n\n\n\n\n\n\nImportant\n\n\n\nVT-x / SVM alone is not enough. Without VT-d or AMD-Vi, /sys/kernel/iommu_groups stays empty and Proxmox will refuse the PCI device.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>BIOS and UEFI settings</span>"
+    ]
+  },
+  {
+    "objectID": "02-bios.html#slot-choice",
+    "href": "02-bios.html#slot-choice",
+    "title": "2  BIOS and UEFI settings",
+    "section": "2.3 Slot choice",
+    "text": "2.3 Slot choice\nOn many B450/B550/X570 boards the HBA only isolates cleanly in the first full-length PCIe slot. If Chapter 4 shows a shared group, move the card before you add ACS override.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>BIOS and UEFI settings</span>"
+    ]
+  },
+  {
+    "objectID": "03-iommu.html",
+    "href": "03-iommu.html",
+    "title": "3  Enable IOMMU on the Proxmox host",
+    "section": "",
+    "text": "3.1 GRUB\nSSH into the host. See how it boots:\nTypical on BIOS installs and some older UEFI installs. Edit /etc/default/grub.\nIntel:\nAMD (modern kernels often enable AMD-Vi without the extra flag; keeping it is fine):\nApply:",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Enable IOMMU on the Proxmox host</span>"
+    ]
+  },
+  {
+    "objectID": "03-iommu.html#grub",
+    "href": "03-iommu.html#grub",
+    "title": "3  Enable IOMMU on the Proxmox host",
+    "section": "",
+    "text": "GRUB_CMDLINE_LINUX_DEFAULT=\"quiet intel_iommu=on iommu=pt\"\n\nGRUB_CMDLINE_LINUX_DEFAULT=\"quiet amd_iommu=on iommu=pt\"\n\nupdate-grub",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Enable IOMMU on the Proxmox host</span>"
+    ]
+  },
+  {
+    "objectID": "03-iommu.html#systemd-boot",
+    "href": "03-iommu.html#systemd-boot",
+    "title": "3  Enable IOMMU on the Proxmox host",
+    "section": "3.2 systemd-boot",
+    "text": "3.2 systemd-boot\nTypical on current UEFI Proxmox 8/9. Edit /etc/kernel/cmdline and append to the existing line. Do not delete root=.\nIntel:\nintel_iommu=on iommu=pt\nAMD:\namd_iommu=on iommu=pt\nApply:\nproxmox-boot-tool refresh\niommu=pt is passthrough mode: only devices given to VMs pay IOMMU cost.\n\n\n\n\n\n\nNote\n\n\n\nOn Proxmox kernels 6.8+, Intel often turns IOMMU on without intel_iommu=on. Keep the flag anyway so the intent is obvious in /proc/cmdline.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Enable IOMMU on the Proxmox host</span>"
+    ]
+  },
+  {
+    "objectID": "03-iommu.html#load-vfio-at-boot",
+    "href": "03-iommu.html#load-vfio-at-boot",
+    "title": "3  Enable IOMMU on the Proxmox host",
+    "section": "3.3 Load VFIO at boot",
+    "text": "3.3 Load VFIO at boot\nAdd to /etc/modules:\nvfio\nvfio_iommu_type1\nvfio_pci\nvfio_virqfd was folded into other modules on newer kernels. Skip it if modprobe complains.\nReboot, then check:\ndmesg | grep -e DMAR -e IOMMU -e AMD-Vi\ncat /proc/cmdline\nYou want DMAR or AMD-Vi tables found, “IOMMU enabled”, and the flags in the command line.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Enable IOMMU on the Proxmox host</span>"
+    ]
+  },
+  {
+    "objectID": "04-identify-hba.html",
+    "href": "04-identify-hba.html",
+    "title": "4  Identify the HBA and IOMMU group",
+    "section": "",
+    "text": "4.1 Find the card\nExample output:",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Identify the HBA and IOMMU group</span>"
+    ]
+  },
+  {
+    "objectID": "04-identify-hba.html#find-the-card",
+    "href": "04-identify-hba.html#find-the-card",
+    "title": "4  Identify the HBA and IOMMU group",
+    "section": "",
+    "text": "lspci -nn | grep -iE 'sas|scsi|lsi|broadcom|aha|hba'\n\n02:00.0 Serial Attached SCSI controller [0107]: Broadcom / LSI SAS3008 [1000:0097]\n\n02:00.0 is the PCI address\n1000:0097 is vendor:device (needed for vfio)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Identify the HBA and IOMMU group</span>"
+    ]
+  },
+  {
+    "objectID": "04-identify-hba.html#print-iommu-groups",
+    "href": "04-identify-hba.html#print-iommu-groups",
+    "title": "4  Identify the HBA and IOMMU group",
+    "section": "4.2 Print IOMMU groups",
+    "text": "4.2 Print IOMMU groups\nfor d in /sys/kernel/iommu_groups/*/devices/*; do\n  g=${d#*/iommu_groups/}; g=${g%%/*}\n  echo \"IOMMU Group $g: $(lspci -nns ${d##*/})\"\ndone | sort -V\nThe HBA should sit alone in its group, or only with its own extra functions (02:00.0, 02:00.1, …).",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Identify the HBA and IOMMU group</span>"
+    ]
+  },
+  {
+    "objectID": "04-identify-hba.html#when-the-group-is-dirty",
+    "href": "04-identify-hba.html#when-the-group-is-dirty",
+    "title": "4  Identify the HBA and IOMMU group",
+    "section": "4.3 When the group is dirty",
+    "text": "4.3 When the group is dirty\nIf the HBA shares a group with the management NIC, GPU, chipset USB, or the Proxmox boot controller, do not pass that group. The host will lose those devices the moment the VM starts.\nFix in this order:\n\nMove the HBA to another PCIe slot (try slot 1).\nUpdate the motherboard BIOS.\nLast resort on a single-tenant homelab only: add to the kernel command line:\n\npcie_acs_override=downstream,multifunction\nThen update-grub or proxmox-boot-tool refresh and reboot.\n\n\n\n\n\n\nWarning\n\n\n\nACS override weakens DMA isolation between devices. Fine on a box only you use. Do not use it on a shared host.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Identify the HBA and IOMMU group</span>"
+    ]
+  },
+  {
+    "objectID": "05-vfio.html",
+    "href": "05-vfio.html",
+    "title": "5  Bind the HBA to vfio-pci",
+    "section": "",
+    "text": "5.1 Confirm IDs\nIf Proxmox loads mpt3sas, mpt2sas, or megaraid_sas on the card, the host can see — and touch — the TrueNAS disks. Bind the card to vfio before you create the VM.\nUse your address and ID. The rest of this chapter keeps 02:00.0 and 1000:0097 as the example.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Bind the HBA to vfio-pci</span>"
+    ]
+  },
+  {
+    "objectID": "05-vfio.html#confirm-ids",
+    "href": "05-vfio.html#confirm-ids",
+    "title": "5  Bind the HBA to vfio-pci",
+    "section": "",
+    "text": "lspci -nn -s 02:00.0",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Bind the HBA to vfio-pci</span>"
+    ]
+  },
+  {
+    "objectID": "05-vfio.html#bind-and-blacklist",
+    "href": "05-vfio.html#bind-and-blacklist",
+    "title": "5  Bind the HBA to vfio-pci",
+    "section": "5.2 Bind and blacklist",
+    "text": "5.2 Bind and blacklist\necho \"options vfio-pci ids=1000:0097\" &gt; /etc/modprobe.d/vfio.conf\necho \"blacklist mpt3sas\" &gt;&gt; /etc/modprobe.d/blacklist.conf\necho \"blacklist mpt2sas\" &gt;&gt; /etc/modprobe.d/blacklist.conf\nupdate-initramfs -u -k all\nreboot\nAfter reboot:\nlspci -k -s 02:00.0\nKernel driver in use: must be vfio-pci, not mpt3sas. The data disks should vanish from the Proxmox Disks view.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Bind the HBA to vfio-pci</span>"
+    ]
+  },
+  {
+    "objectID": "05-vfio.html#if-the-host-driver-still-wins",
+    "href": "05-vfio.html#if-the-host-driver-still-wins",
+    "title": "5  Bind the HBA to vfio-pci",
+    "section": "5.3 If the host driver still wins",
+    "text": "5.3 If the host driver still wins\necho \"softdep mpt3sas pre: vfio-pci\" &gt;&gt; /etc/modprobe.d/vfio.conf\nupdate-initramfs -u -k all\nreboot\nMulti-function cards: put every vendor:device ID on one line, comma-separated:\noptions vfio-pci ids=1000:0097,1000:00c9",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Bind the HBA to vfio-pci</span>"
+    ]
+  },
+  {
+    "objectID": "06-create-vm.html",
+    "href": "06-create-vm.html",
+    "title": "6  Create the TrueNAS SCALE VM",
+    "section": "",
+    "text": "6.1 Settings that matter\nInstall TrueNAS onto a virtual OS disk first, with no HBA attached. Confirm it boots. Add passthrough in Chapter 7.\nq35 is required for real PCIe. i440fx only does legacy PCI.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
+    ]
+  },
+  {
+    "objectID": "06-create-vm.html#settings-that-matter",
+    "href": "06-create-vm.html#settings-that-matter",
+    "title": "6  Create the TrueNAS SCALE VM",
+    "section": "",
+    "text": "Setting\nValue\n\n\n\n\nMachine\nq35\n\n\nBIOS\nOVMF (UEFI)\n\n\nCPU type\nhost\n\n\nCores\n4 or more\n\n\nRAM\n16 GB minimum, ballooning off\n\n\nSCSI controller (OS disk only)\nVirtIO SCSI\n\n\nOS disk\n16–32 GB on Proxmox SSD/NVMe\n\n\nNetwork\nVirtIO on vmbr0\n\n\nStart at boot\nOff until passthrough works",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
+    ]
+  },
+  {
+    "objectID": "06-create-vm.html#example-qm-create",
+    "href": "06-create-vm.html#example-qm-create",
+    "title": "6  Create the TrueNAS SCALE VM",
+    "section": "6.2 Example qm create",
+    "text": "6.2 Example qm create\nqm create 300 \\\n  --name truenas \\\n  --memory 16384 \\\n  --balloon 0 \\\n  --cores 4 \\\n  --cpu host \\\n  --bios ovmf \\\n  --machine q35 \\\n  --efidisk0 local-lvm:1,efitype=4m,pre-enrolled-keys=0 \\\n  --scsihw virtio-scsi-single \\\n  --scsi0 local-lvm:32,ssd=1 \\\n  --net0 virtio,bridge=vmbr0 \\\n  --ostype l26\nAttach the SCALE ISO, set boot order to the CD, install onto scsi0, then set boot back to the virtual disk.\n\n\n\n\n\n\nTip\n\n\n\nKeep the TrueNAS boot pool on the virtual disk. The HBA is only for the data pool. You can rebuild the VM and import the same pool later.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
+    ]
+  },
+  {
+    "objectID": "07-passthrough.html",
+    "href": "07-passthrough.html",
+    "title": "7  Pass the HBA into the VM",
+    "section": "",
+    "text": "7.1 From the Proxmox UI\nVM → Hardware → Add → PCI Device.\nROM-Bar off is the usual fix for a VM that hangs on “Booting from Hard Disk” after an LSI card is added.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Pass the HBA into the VM</span>"
+    ]
+  },
+  {
+    "objectID": "07-passthrough.html#from-the-proxmox-ui",
+    "href": "07-passthrough.html#from-the-proxmox-ui",
+    "title": "7  Pass the HBA into the VM",
+    "section": "",
+    "text": "Device: 02:00.0, or the whole 02:00 if you tick All Functions\nPCI-Express: on (pcie=1)\nROM-Bar: off (rombar=0)\nPrimary GPU: off",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Pass the HBA into the VM</span>"
+    ]
+  },
+  {
+    "objectID": "07-passthrough.html#from-the-cli",
+    "href": "07-passthrough.html#from-the-cli",
+    "title": "7  Pass the HBA into the VM",
+    "section": "7.2 From the CLI",
+    "text": "7.2 From the CLI\nOne function:\nqm set 300 --hostpci0 02:00.0,pcie=1,rombar=0\nEvery function at that address (preferred for HBAs):\nqm set 300 --hostpci0 02:00,pcie=1,rombar=0\nDo not make the HBA a boot device. TrueNAS boots from the virtual OS disk.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Pass the HBA into the VM</span>"
+    ]
+  },
+  {
+    "objectID": "07-passthrough.html#after-start",
+    "href": "07-passthrough.html#after-start",
+    "title": "7  Pass the HBA into the VM",
+    "section": "7.3 After start",
+    "text": "7.3 After start\nIn TrueNAS: Storage → Disks. You should see real model names, serials, and SMART. Import an existing pool or create a new one.\nThe matching line in /etc/pve/qemu-server/300.conf looks like:\nhostpci0: 0000:02:00,pcie=1,rombar=0",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Pass the HBA into the VM</span>"
+    ]
+  },
+  {
+    "objectID": "08-truenas.html",
+    "href": "08-truenas.html",
+    "title": "8  TrueNAS after passthrough",
+    "section": "",
+    "text": "8.1 First checks",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>TrueNAS after passthrough</span>"
+    ]
+  },
+  {
+    "objectID": "08-truenas.html#first-checks",
+    "href": "08-truenas.html#first-checks",
+    "title": "8  TrueNAS after passthrough",
+    "section": "",
+    "text": "Disks appear with serial numbers, not generic sdX only\nSMART works inside TrueNAS, not on the Proxmox host\nPool import or create succeeds without “disk in use” errors",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>TrueNAS after passthrough</span>"
+    ]
+  },
+  {
+    "objectID": "08-truenas.html#guest-hygiene",
+    "href": "08-truenas.html#guest-hygiene",
+    "title": "8  TrueNAS after passthrough",
+    "section": "8.2 Guest hygiene",
+    "text": "8.2 Guest hygiene\n\nStatic MAC on the VirtIO NIC, plus a DHCP reservation or static IP\nDo not use Proxmox snapshots of the virtual OS disk as the backup plan for the pool\nSnapshot and replicate inside TrueNAS (or zfs send to another box)\nVirtIO networking is enough for SMB/NFS. Pass a spare NIC later if you want 10 GbE with less CPU",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>TrueNAS after passthrough</span>"
+    ]
+  },
+  {
+    "objectID": "08-truenas.html#what-not-to-do",
+    "href": "08-truenas.html#what-not-to-do",
+    "title": "8  TrueNAS after passthrough",
+    "section": "8.3 What not to do",
+    "text": "8.3 What not to do\n\nDo not let Proxmox mount or SMART-scan the HBA disks\nDo not put swap or the Proxmox boot disk on the passed-through card\nDo not enable QEMU disk cache tricks on the data pool — there is no QEMU disk in front of it",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>TrueNAS after passthrough</span>"
+    ]
+  },
+  {
+    "objectID": "09-troubleshooting.html",
+    "href": "09-troubleshooting.html",
+    "title": "9  Troubleshooting",
+    "section": "",
+    "text": "9.1 VM hangs at “Booting from Hard Disk”\nSet rombar=0 (uncheck ROM-Bar). Disable the slot Option ROM in system BIOS. Some LSI utilities also have “boot from this controller” — turn that off. The VM should boot the virtual OS disk only.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Troubleshooting</span>"
+    ]
+  },
+  {
+    "objectID": "09-troubleshooting.html#iommu-groups-missing-pci-device-not-available",
+    "href": "09-troubleshooting.html#iommu-groups-missing-pci-device-not-available",
+    "title": "9  Troubleshooting",
+    "section": "9.2 IOMMU groups missing / “PCI device not available”",
+    "text": "9.2 IOMMU groups missing / “PCI device not available”\nVT-d or AMD-Vi is still off, or the kernel flags did not apply.\ncat /proc/cmdline\ndmesg | grep -e DMAR -e IOMMU -e AMD-Vi\nRevisit Chapter 2 and Chapter 3.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Troubleshooting</span>"
+    ]
+  },
+  {
+    "objectID": "09-troubleshooting.html#proxmox-still-lists-the-data-disks",
+    "href": "09-troubleshooting.html#proxmox-still-lists-the-data-disks",
+    "title": "9  Troubleshooting",
+    "section": "9.3 Proxmox still lists the data disks",
+    "text": "9.3 Proxmox still lists the data disks\nvfio bind failed. lspci -k -s 02:00.0 should show vfio-pci. Rebuild initramfs after blacklist changes (Chapter 5).",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Troubleshooting</span>"
+    ]
+  },
+  {
+    "objectID": "09-troubleshooting.html#truenas-sees-the-hba-but-no-disks",
+    "href": "09-troubleshooting.html#truenas-sees-the-hba-but-no-disks",
+    "title": "9  Troubleshooting",
+    "section": "9.4 TrueNAS sees the HBA but no disks",
+    "text": "9.4 TrueNAS sees the HBA but no disks\n\nConfirm IT firmware, not IR\nPass all functions of the card\nReseat SFF-8087 / 8643 cables; the card can enumerate with no SAS link\nCheck disk power",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Troubleshooting</span>"
+    ]
+  },
+  {
+    "objectID": "09-troubleshooting.html#host-dies-when-the-vm-autostarts",
+    "href": "09-troubleshooting.html#host-dies-when-the-vm-autostarts",
+    "title": "9  Troubleshooting",
+    "section": "9.5 Host dies when the VM autostarts",
+    "text": "9.5 Host dies when the VM autostarts\nThe HBA shared an IOMMU group with the management NIC. From the boot menu, drop intel_iommu=on / amd_iommu=on for one boot, turn VM autostart off, fix grouping (Chapter 4), then re-enable IOMMU.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Troubleshooting</span>"
+    ]
+  },
+  {
+    "objectID": "09-troubleshooting.html#need-acs-override",
+    "href": "09-troubleshooting.html#need-acs-override",
+    "title": "9  Troubleshooting",
+    "section": "9.6 Need ACS override?",
+    "text": "9.6 Need ACS override?\nOnly after a slot change and a BIOS update still leave a dirty group. Homelab only.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Troubleshooting</span>"
+    ]
+  },
+  {
+    "objectID": "09-troubleshooting.html#quick-verification-set",
+    "href": "09-troubleshooting.html#quick-verification-set",
+    "title": "9  Troubleshooting",
+    "section": "9.7 Quick verification set",
+    "text": "9.7 Quick verification set\ncat /proc/cmdline\ndmesg | grep -e DMAR -e IOMMU -e vfio\nlspci -k -s 02:00.0\nls /sys/kernel/iommu_groups",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Troubleshooting</span>"
+    ]
+  },
+  {
+    "objectID": "10-reference.html",
+    "href": "10-reference.html",
+    "title": "10  Command reference",
+    "section": "",
+    "text": "10.1 Host\nIOMMU groups:",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Command reference</span>"
+    ]
+  },
+  {
+    "objectID": "10-reference.html#host",
+    "href": "10-reference.html#host",
+    "title": "10  Command reference",
+    "section": "",
+    "text": "proxmox-boot-tool status\ncat /proc/cmdline\ndmesg | grep -e DMAR -e IOMMU -e AMD-Vi -e vfio\nlspci -nn | grep -iE 'sas|scsi|lsi|broadcom'\nlspci -k -s 02:00.0\n\nfor d in /sys/kernel/iommu_groups/*/devices/*; do\n  g=${d#*/iommu_groups/}; g=${g%%/*}\n  echo \"IOMMU Group $g: $(lspci -nns ${d##*/})\"\ndone | sort -V",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Command reference</span>"
+    ]
+  },
+  {
+    "objectID": "10-reference.html#kernel-flags",
+    "href": "10-reference.html#kernel-flags",
+    "title": "10  Command reference",
+    "section": "10.2 Kernel flags",
+    "text": "10.2 Kernel flags\nIntel GRUB:\nquiet intel_iommu=on iommu=pt\nAMD GRUB:\nquiet amd_iommu=on iommu=pt\nOptional last-resort ACS split:\npcie_acs_override=downstream,multifunction",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Command reference</span>"
+    ]
+  },
+  {
+    "objectID": "10-reference.html#vfio",
+    "href": "10-reference.html#vfio",
+    "title": "10  Command reference",
+    "section": "10.3 vfio",
+    "text": "10.3 vfio\n# /etc/modprobe.d/vfio.conf\noptions vfio-pci ids=1000:0097\nsoftdep mpt3sas pre: vfio-pci\n# /etc/modprobe.d/blacklist.conf\nblacklist mpt3sas\nblacklist mpt2sas\nupdate-initramfs -u -k all",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Command reference</span>"
+    ]
+  },
+  {
+    "objectID": "10-reference.html#vm",
+    "href": "10-reference.html#vm",
+    "title": "10  Command reference",
+    "section": "10.4 VM",
+    "text": "10.4 VM\nqm set 300 --hostpci0 02:00,pcie=1,rombar=0\n/etc/pve/qemu-server/300.conf fragment:\nbios: ovmf\nmachine: q35\ncpu: host\nballoon: 0\nhostpci0: 0000:02:00,pcie=1,rombar=0\nReplace 02:00 and 1000:0097 with your lspci -nn output.",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Command reference</span>"
+    ]
+  }
+]
