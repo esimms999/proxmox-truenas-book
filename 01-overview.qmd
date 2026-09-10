@@ -16,6 +16,8 @@
 
 Proxmox boots from its own NVMe or board SATA. TrueNAS boots from a small virtual disk. The HBA and every disk on it belong only to the VM.
 
+The same host can pass a second device — a discrete GPU — into another VM using the identical BIOS/IOMMU/vfio pipeline; see @sec-gpu. The GPU and the HBA just need to land in separate IOMMU groups.
+
 ## Why pass the HBA, not individual disks
 
 Virtual disks and "passthrough by serial" sit behind the hypervisor. ZFS then cannot trust SMART, cache flush, or device identity the way it can on bare metal. Passing the **entire controller** gives TrueNAS the same view it would have on metal: serials, SMART, resilver, and disk replace.
@@ -30,6 +32,7 @@ Do **not** put the Proxmox boot drive on that HBA.
 - Confirm firmware with `sas2flash -list` or `sas3flash -list` — look for `(IT)`
 - RAM for the VM: 16 GB is a floor; more if the pool is large
 - HBA in a PCIe slot that can land in its own IOMMU group (often slot 1 on consumer boards)
+- If also passing a GPU: a board with an iGPU so the host keeps a console, or a plan to run headless (@sec-gpu)
 
 ::: {.callout-warning}
 IR/RAID firmware hides disks behind a RAID abstraction. ZFS needs raw devices. Flash IT mode **before** you pass the card through.

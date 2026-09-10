@@ -1,6 +1,6 @@
 # Preface {.unnumbered}
 
-This book is a working runbook for running **TrueNAS SCALE as a VM on a Proxmox VE host**, with the data disks attached through a dedicated **HBA in IT mode** passed through to the guest.
+This book is a working runbook for running **TrueNAS SCALE as a VM on a Proxmox VE host**, with the data disks attached through a dedicated **HBA in IT mode** passed through to the guest. It also covers passing a **discrete GPU** into a second VM on the same host, since the BIOS and IOMMU groundwork is shared between both.
 
 That is the layout iXsystems still recommends for production data: the hypervisor owns its own boot disk; TrueNAS owns the storage controller and the pool.
 
@@ -23,6 +23,6 @@ quarto publish gh-pages
 
 ## Scope
 
-Chapters walk the host from a cold BIOS through IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line, and the failures that usually show up after the HBA is attached.
+Chapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.
 
 Commands assume a current Proxmox VE 8/9 host and TrueNAS SCALE 24.10 / 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own `lspci`.
