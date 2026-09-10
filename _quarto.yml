@@ -19,6 +19,7 @@ book:
     - 08-truenas.qmd
     - 09-troubleshooting.qmd
     - 10-reference.qmd
+  repo-url: https://github.com/esimms999/proxmox-truenas-book
   sidebar:
     style: docked
     search: true
