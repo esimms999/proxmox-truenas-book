@@ -9,14 +9,22 @@ Reboot the physical host and enter setup (Del, F2, or F10). Names vary by vendor
 | Intel **VT-x** or AMD **SVM / AMD-V** | Enabled | Basic virtualization. Not IOMMU. |
 | Intel **VT-d** or AMD **AMD-Vi / IOMMU** | Enabled | Required for PCI passthrough. |
 | **SR-IOV** | Enabled if present | Not required for an HBA. |
-| **Above 4G Decoding** | Enabled | More important for GPUs; enable anyway. |
-| **Resizable BAR** | Off unless you also pass a GPU | Can confuse some HBAs. |
+| **Above 4G Decoding** | Enabled | Required for large BAR allocations; more important when also passing a GPU, but harmless for an HBA-only build. |
+| **Resizable BAR** (Intel) | Enabled if also passing a GPU, otherwise off | Recommended alongside Above 4G Decoding for modern GPUs; leave off for an HBA-only build. |
+| **Resizable BAR** (AMD) | Disabled | Known to cause boot/stability issues on several AMD platforms — leave off even when also passing a GPU. |
 | **CSM / Legacy boot** | Off if Proxmox is UEFI | Stay in UEFI end to end. |
 | **Secure Boot** | Off (simplest) | Avoids vfio module signing fights. |
+| **Fast Boot** | Off | Fast Boot can skip device init steps the installer and IOMMU setup rely on. |
+| **PXE network boot** | Off unless you need it | One less legacy boot path to fight with UEFI/OVMF. |
 | **iGPU / Integrated Graphics** | Disable if the VM hangs after adding the HBA | Common Intel hang fix. |
 | Slot **Option ROM / OPROM** for the HBA | Disabled if available | Stops the card from trying to boot the host. |
+| Other **Option ROMs** (NIC, RAID controller, etc.) | Disabled if you see detection errors | Same failure mode as the HBA's Option ROM, just on a different slot. |
 
 Save and reboot into Proxmox.
+
+::: {.callout-note}
+Resizable BAR splits by vendor: Intel boards generally tolerate it and benefit when a GPU is passed through, while several AMD boards have reported crashes or failed boots with it enabled — regardless of whether a GPU is involved. When in doubt, leave it off and rely on Above 4G Decoding alone; only test enabling Resizable BAR on Intel systems after everything else is stable.
+:::
 
 ## Where vendors hide IOMMU
 

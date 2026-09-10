@@ -1,0 +1,36 @@
+# Installing Proxmox VE {#sec-install}
+
+With the BIOS settings from @sec-bios in place, install Proxmox VE itself before moving on to IOMMU and passthrough configuration.
+
+::: {.callout-note}
+The HBA and GPU should already be seated in the system at this point — some boards renumber PCIe slots or change IOMMU grouping when cards are added or removed later. The drives on the HBA do **not** need to be connected yet, and no other storage needs to be attached; add them once you're ready to pass the card through to a VM.
+:::
+
+## Preparing installation media
+
+- Get the current Proxmox VE installer ISO from the [Proxmox downloads page](https://www.proxmox.com/en/downloads).
+- If reusing a drive that had a prior OS or partition table on it, wipe it first with **GParted** to avoid stale ESP or RAID metadata confusing the installer.
+- Flash the ISO to a USB stick with **balenaEtcher** (or Rufus on Windows).
+
+## Booting the installer
+
+- Plug in the USB stick, reboot, and open the boot menu (usually F11/F12/Esc — varies by vendor).
+- Pick the boot entry explicitly labeled **UEFI: [your USB drive]**. Booting the non-UEFI/legacy entry produces a BIOS-mode install, which fights with the OVMF (UEFI) VMs used later in this book.
+
+## Running the installer
+
+- Choose **Install Proxmox VE (Graphical)** and step through the EULA and target disk selection.
+- For the target filesystem, ext4 is the simpler choice for the boot disk; ZFS is also offered by the installer but adds boot-pool complexity that isn't needed here. Either way the installer detects UEFI and creates the EFI System Partition (ESP) automatically.
+- Set the host's network, timezone, and root password/email as prompted, then let it finish and reboot.
+
+After the reboot, confirm the host actually came up in UEFI mode:
+
+```bash
+proxmox-boot-tool status
+```
+
+You want to see `System currently booted with uefi`. If it instead shows `bios`/`legacy`, the boot entry chosen during install was wrong — re-check the BIOS boot-mode settings from @sec-bios and reinstall.
+
+::: {.callout-tip}
+Additional data drives can be added to Proxmox at any time — they don't need to be present for this install. The HBA's drives specifically should stay disconnected until you're ready to pass the controller through to the TrueNAS VM in @sec-passthrough.
+:::

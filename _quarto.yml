@@ -4,21 +4,23 @@ project:
 
 book:
   title: "TrueNAS SCALE on Proxmox"
-  subtitle: "HBA passthrough from BIOS to a running pool"
+  subtitle: "HBA and GPU passthrough from BIOS to a running pool"
   author: "Eric"
   date: today
   chapters:
     - index.qmd
     - 01-overview.qmd
     - 02-bios.qmd
-    - 03-iommu.qmd
-    - 04-identify-hba.qmd
-    - 05-vfio.qmd
-    - 06-create-vm.qmd
-    - 07-passthrough.qmd
-    - 08-truenas.qmd
-    - 09-troubleshooting.qmd
-    - 10-reference.qmd
+    - 03-install-proxmox.qmd
+    - 04-iommu.qmd
+    - 05-identify-hba.qmd
+    - 06-vfio.qmd
+    - 07-create-vm.qmd
+    - 08-passthrough.qmd
+    - 09-gpu-passthrough.qmd
+    - 10-truenas.qmd
+    - 11-troubleshooting.qmd
+    - 12-reference.qmd
   repo-url: https://github.com/esimms999/proxmox-truenas-book
   sidebar:
     style: docked

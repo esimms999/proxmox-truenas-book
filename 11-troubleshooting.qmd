@@ -34,6 +34,18 @@ The HBA shared an IOMMU group with the management NIC. From the boot menu, drop 
 
 Only after a slot change and a BIOS update still leave a dirty group. Homelab only.
 
+## Guest shows a generic display adapter, not the GPU
+
+The GPU driver still won on the host, so the guest is stuck with QXL/VGA emulation. Confirm `lspci -k -s <addr>` shows `vfio-pci` for **both** the VGA and audio functions (@sec-gpu), and that both vendor:device IDs are on the `vfio-pci ids=` line.
+
+## Windows guest shows Nvidia Code 43
+
+The driver detected virtualization. Hide it with `cpu: host,hidden=1` (@sec-gpu).
+
+## GPU passthrough works once, then fails after a VM reboot
+
+Likely the AMD reset bug — the card isn't releasing cleanly. Reboot the host, or look into `vendor-reset` for your card (@sec-gpu).
+
 ## Quick verification set
 
 ```bash
