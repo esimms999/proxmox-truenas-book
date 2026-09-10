@@ -1,0 +1,5 @@
+/*-- scss:defaults --*/
+
+// Widen the docked sidebar so chapter titles don't wrap.
+// Quarto's default is 250px.
+$grid-sidebar-width: 350px !default;
