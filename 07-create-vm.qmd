@@ -2,6 +2,24 @@
 
 Install TrueNAS onto a **virtual OS disk** first, with no HBA attached. Confirm it boots. Add passthrough in @sec-passthrough.
 
+## Download the TrueNAS SCALE ISO
+
+- Get the current SCALE ISO from the [TrueNAS download page](https://www.truenas.com/download-truenas-scale/). Pick the stable release, not Nightlies, unless you specifically need a newer feature.
+- Verify the download against the checksum published next to it on that page:
+
+```bash
+sha256sum TrueNAS-SCALE-*.iso
+```
+
+- Get the ISO onto Proxmox storage. Either upload it through the UI (**Datacenter → *node* → local (or other storage) → ISO Images → Upload**), or pull it straight from the Proxmox shell into the storage's ISO directory:
+
+```bash
+wget -O /var/lib/vz/template/iso/TrueNAS-SCALE-latest.iso \
+  https://download.sys.truenas.net/TrueNAS-SCALE-Dragonfish/latest/TrueNAS-SCALE.iso
+```
+
+Replace the URL with the one from the download page — the "latest" redirect changes with each release. `local` is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.
+
 ## Settings that matter
 
 | Setting | Value |
@@ -32,11 +50,22 @@ qm create 300 \
   --efidisk0 local-lvm:1,efitype=4m,pre-enrolled-keys=0 \
   --scsihw virtio-scsi-single \
   --scsi0 local-lvm:32,ssd=1 \
+  --ide2 local:iso/TrueNAS-SCALE-latest.iso,media=cdrom \
+  --boot order=ide2\;scsi0 \
   --net0 virtio,bridge=vmbr0 \
   --ostype l26
 ```
 
-Attach the SCALE ISO, set boot order to the CD, install onto `scsi0`, then set boot back to the virtual disk.
+`--ide2 ...,media=cdrom` attaches the ISO downloaded above; swap in your actual filename. `--boot order=ide2;scsi0` boots the installer first, then falls back to the virtual disk.
+
+Start the VM, open its **Console** in the Proxmox UI, and run through the TrueNAS SCALE installer onto the virtual disk (`scsi0`) — the only disk it should see at this point, since the HBA isn't attached yet. Once TrueNAS boots on its own from `scsi0`:
+
+```bash
+qm set 300 --boot order=scsi0
+qm set 300 --ide2 none
+```
+
+This drops the ISO and returns the boot order to the virtual disk only, so the VM doesn't try to reinstall on every reboot.
 
 ::: {.callout-tip}
 Keep the TrueNAS boot pool on the virtual disk. The HBA is only for the data pool. You can rebuild the VM and import the same pool later.
