@@ -36,3 +36,7 @@ The matching line in `/etc/pve/qemu-server/300.conf` looks like:
 ```text
 hostpci0: 0000:02:00,pcie=1,rombar=0
 ```
+
+::: {.callout-note}
+Passing a GPU instead of an HBA? The mechanics are the same UI/CLI flow, but the flag values differ — see @sec-gpu.
+:::

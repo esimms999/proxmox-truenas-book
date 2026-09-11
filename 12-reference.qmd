@@ -74,3 +74,25 @@ hostpci0: 0000:02:00,pcie=1,rombar=0
 ```
 
 Replace `02:00` and `1000:0097` with your `lspci -nn` output.
+
+## GPU passthrough (@sec-gpu)
+
+```bash
+lspci -nn | grep -iE 'vga|3d|display'
+```
+
+```text
+# /etc/modprobe.d/vfio.conf
+options vfio-pci ids=10de:2504,10de:228e
+```
+
+```text
+# /etc/modprobe.d/blacklist.conf
+blacklist nouveau
+blacklist nvidia
+```
+
+```bash
+qm set 300 --hostpci0 01:00,pcie=1,x-vga=0
+qm set 300 --cpu host,hidden=1,flags=+pcid
+```

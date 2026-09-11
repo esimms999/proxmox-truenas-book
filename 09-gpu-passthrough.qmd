@@ -1,0 +1,92 @@
+# GPU passthrough {#sec-gpu}
+
+A second common passthrough target on the same host is a discrete GPU — for a Windows gaming VM, a transcode/AI VM, or anything that needs direct hardware acceleration. The BIOS, IOMMU, and vfio groundwork from @sec-bios, @sec-iommu, and @sec-identify is identical; this chapter covers what's different for a GPU versus the HBA in @sec-vfio and @sec-passthrough.
+
+## Identify the GPU and its group
+
+```bash
+lspci -nn | grep -iE 'vga|3d|display'
+```
+
+```text
+01:00.0 VGA compatible controller [0300]: NVIDIA Corporation ... [10de:2504]
+01:00.1 Audio device [0403]: NVIDIA Corporation ... [10de:228e]
+```
+
+A discrete GPU is almost always a **multi-function** device: the VGA function and its HDMI/DP audio function share one IOMMU group. Pass both together — check the group with the same loop from @sec-identify.
+
+## Free up a console for the host
+
+If the discrete GPU is the only display adapter, the host needs another way to show a console once the card is handed to a VM:
+
+- Prefer a board with an **iGPU** and set it as the primary/boot display in BIOS (see the iGPU row in @sec-bios), leaving the discrete card untouched at boot.
+- Otherwise, plan to manage Proxmox entirely over SSH/the web UI after the card is bound to vfio.
+
+## Bind the GPU to vfio-pci
+
+Same mechanism as the HBA, but blacklist the GPU driver instead of the SAS driver:
+
+```bash
+echo "options vfio-pci ids=10de:2504,10de:228e" > /etc/modprobe.d/vfio.conf
+echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
+echo "blacklist nvidia" >> /etc/modprobe.d/blacklist.conf
+echo "blacklist amdgpu" >> /etc/modprobe.d/blacklist.conf
+echo "blacklist radeon" >> /etc/modprobe.d/blacklist.conf
+update-initramfs -u -k all
+reboot
+```
+
+List both vendor:device IDs (VGA and audio function) on the `vfio-pci ids=` line. Only blacklist the driver family that matches your card — leave the other vendor's driver alone.
+
+After reboot:
+
+```bash
+lspci -k -s 01:00.0
+lspci -k -s 01:00.1
+```
+
+Both should show `Kernel driver in use: vfio-pci`. If the GPU driver still wins the race, add a softdep the same way as @sec-vfio:
+
+```bash
+echo "softdep nvidia pre: vfio-pci" >> /etc/modprobe.d/vfio.conf
+```
+
+## Pass the GPU into the VM
+
+From the Proxmox UI: VM → **Hardware** → **Add** → **PCI Device**, tick **All Functions** so the VGA and audio functions move together.
+
+From the CLI:
+
+```bash
+qm set 300 --hostpci0 01:00,pcie=1,x-vga=0
+```
+
+Notes on the flags, which differ from the HBA case in @sec-passthrough:
+
+- **ROM-Bar**: leave **on** (default) for most GPUs so the guest can read the card's own VBIOS. Only set `rombar=0` with a `romfile=` (a VBIOS dump for that exact card) if the guest reports a black screen or Code 43 — this is common with some consumer Nvidia cards.
+- **x-vga**: set `x-vga=1` only if this GPU is meant to be the VM's primary display shown in the Proxmox console framebuffer. For remote-desktop/headless use (RDP, Sunshine/Moonlight, transcoding), leave it `0`.
+- **Primary GPU** toggle in the UI mirrors `x-vga` — leave it off unless you need the boot-time framebuffer.
+
+## Known quirks
+
+::: {.callout-warning}
+**Nvidia "Code 43" in a Windows guest**: Nvidia consumer drivers detect they're in a VM and disable themselves. Hide the hypervisor from the guest:
+
+```bash
+qm set 300 --cpu host,hidden=1,flags=+pcid
+```
+
+Older Proxmox: add `args: -cpu host,kvm=off` to `/etc/pve/qemu-server/300.conf` instead.
+:::
+
+::: {.callout-warning}
+**AMD reset bug**: some AMD cards don't reset cleanly when the VM stops or reboots, leaving the GPU unusable until the host reboots. Look up whether your specific card/driver combination needs the `vendor-reset` kernel module before relying on VM restarts.
+:::
+
+## Verify
+
+```bash
+lspci -k -s 01:00.0
+```
+
+Then boot the VM and confirm the guest OS installs the real GPU driver and shows the card in Device Manager / `nvidia-smi` / `rocm-smi`, not a generic QXL/VGA adapter.
