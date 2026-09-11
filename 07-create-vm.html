@@ -407,8 +407,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#settings-that-matter" id="toc-settings-that-matter" class="nav-link active" data-scroll-target="#settings-that-matter"><span class="header-section-number">7.1</span> Settings that matter</a></li>
-  <li><a href="#example-qm-create" id="toc-example-qm-create" class="nav-link" data-scroll-target="#example-qm-create"><span class="header-section-number">7.2</span> Example <code>qm create</code></a></li>
+  <li><a href="#download-the-truenas-scale-iso" id="toc-download-the-truenas-scale-iso" class="nav-link active" data-scroll-target="#download-the-truenas-scale-iso"><span class="header-section-number">7.1</span> Download the TrueNAS SCALE ISO</a></li>
+  <li><a href="#settings-that-matter" id="toc-settings-that-matter" class="nav-link" data-scroll-target="#settings-that-matter"><span class="header-section-number">7.2</span> Settings that matter</a></li>
+  <li><a href="#example-qm-create" id="toc-example-qm-create" class="nav-link" data-scroll-target="#example-qm-create"><span class="header-section-number">7.3</span> Example <code>qm create</code></a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/07-create-vm.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -436,8 +437,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Install TrueNAS onto a <strong>virtual OS disk</strong> first, with no HBA attached. Confirm it boots. Add passthrough in <a href="08-passthrough.html" class="quarto-xref"><span>Chapter 8</span></a>.</p>
-<section id="settings-that-matter" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="settings-that-matter"><span class="header-section-number">7.1</span> Settings that matter</h2>
+<section id="download-the-truenas-scale-iso" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="download-the-truenas-scale-iso"><span class="header-section-number">7.1</span> Download the TrueNAS SCALE ISO</h2>
+<ul>
+<li>Get the current SCALE ISO from the <a href="https://www.truenas.com/download-truenas-scale/">TrueNAS download page</a>. Pick the stable release, not Nightlies, unless you specifically need a newer feature.</li>
+<li>Verify the download against the checksum published next to it on that page:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> TrueNAS-SCALE-<span class="pp">*</span>.iso</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Get the ISO onto Proxmox storage. Either upload it through the UI (<strong>Datacenter → <em>node</em> → local (or other storage) → ISO Images → Upload</strong>), or pull it straight from the Proxmox shell into the storage’s ISO directory:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-O</span> /var/lib/vz/template/iso/TrueNAS-SCALE-latest.iso <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  https://download.sys.truenas.net/TrueNAS-SCALE-Dragonfish/latest/TrueNAS-SCALE.iso</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Replace the URL with the one from the download page — the “latest” redirect changes with each release. <code>local</code> is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.</p>
+</section>
+<section id="settings-that-matter" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="settings-that-matter"><span class="header-section-number">7.2</span> Settings that matter</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -486,22 +501,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>q35 is required for real PCIe. i440fx only does legacy PCI.</p>
 </section>
-<section id="example-qm-create" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="example-qm-create"><span class="header-section-number">7.2</span> Example <code>qm create</code></h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> create 300 <span class="dt">\</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> truenas <span class="dt">\</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory</span> 16384 <span class="dt">\</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--balloon</span> 0 <span class="dt">\</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cores</span> 4 <span class="dt">\</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cpu</span> host <span class="dt">\</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bios</span> ovmf <span class="dt">\</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--machine</span> q35 <span class="dt">\</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--efidisk0</span> local-lvm:1,efitype=4m,pre-enrolled-keys=0 <span class="dt">\</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--scsihw</span> virtio-scsi-single <span class="dt">\</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--scsi0</span> local-lvm:32,ssd=1 <span class="dt">\</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--net0</span> virtio,bridge=vmbr0 <span class="dt">\</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ostype</span> l26</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Attach the SCALE ISO, set boot order to the CD, install onto <code>scsi0</code>, then set boot back to the virtual disk.</p>
+<section id="example-qm-create" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="example-qm-create"><span class="header-section-number">7.3</span> Example <code>qm create</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> create 300 <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--name</span> truenas <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--memory</span> 16384 <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--balloon</span> 0 <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cores</span> 4 <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cpu</span> host <span class="dt">\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bios</span> ovmf <span class="dt">\</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--machine</span> q35 <span class="dt">\</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--efidisk0</span> local-lvm:1,efitype=4m,pre-enrolled-keys=0 <span class="dt">\</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--scsihw</span> virtio-scsi-single <span class="dt">\</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--scsi0</span> local-lvm:32,ssd=1 <span class="dt">\</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ide2</span> local:iso/TrueNAS-SCALE-latest.iso,media=cdrom <span class="dt">\</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--boot</span> order=ide2<span class="dt">\;</span>scsi0 <span class="dt">\</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">--net0</span> virtio,bridge=vmbr0 <span class="dt">\</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ostype</span> l26</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>--ide2 ...,media=cdrom</code> attaches the ISO downloaded above; swap in your actual filename. <code>--boot order=ide2;scsi0</code> boots the installer first, then falls back to the virtual disk.</p>
+<p>Start the VM, open its <strong>Console</strong> in the Proxmox UI, and run through the TrueNAS SCALE installer onto the virtual disk (<code>scsi0</code>) — the only disk it should see at this point, since the HBA isn’t attached yet. Once TrueNAS boots on its own from <code>scsi0</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--boot</span> order=scsi0</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">qm</span> set 300 <span class="at">--ide2</span> none</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This drops the ISO and returns the boot order to the virtual disk only, so the VM doesn’t try to reinstall on every reboot.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

@@ -274,7 +274,17 @@
     "href": "07-create-vm.html",
     "title": "7  Create the TrueNAS SCALE VM",
     "section": "",
-    "text": "7.1 Settings that matter\nInstall TrueNAS onto a virtual OS disk first, with no HBA attached. Confirm it boots. Add passthrough in Chapter 8.\nq35 is required for real PCIe. i440fx only does legacy PCI.",
+    "text": "7.1 Download the TrueNAS SCALE ISO\nInstall TrueNAS onto a virtual OS disk first, with no HBA attached. Confirm it boots. Add passthrough in Chapter 8.\nReplace the URL with the one from the download page — the “latest” redirect changes with each release. local is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
+    ]
+  },
+  {
+    "objectID": "07-create-vm.html#download-the-truenas-scale-iso",
+    "href": "07-create-vm.html#download-the-truenas-scale-iso",
+    "title": "7  Create the TrueNAS SCALE VM",
+    "section": "",
+    "text": "Get the current SCALE ISO from the TrueNAS download page. Pick the stable release, not Nightlies, unless you specifically need a newer feature.\nVerify the download against the checksum published next to it on that page:\n\nsha256sum TrueNAS-SCALE-*.iso\n\nGet the ISO onto Proxmox storage. Either upload it through the UI (Datacenter → node → local (or other storage) → ISO Images → Upload), or pull it straight from the Proxmox shell into the storage’s ISO directory:\n\nwget -O /var/lib/vz/template/iso/TrueNAS-SCALE-latest.iso \\\n  https://download.sys.truenas.net/TrueNAS-SCALE-Dragonfish/latest/TrueNAS-SCALE.iso",
     "crumbs": [
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
     ]
@@ -283,8 +293,8 @@
     "objectID": "07-create-vm.html#settings-that-matter",
     "href": "07-create-vm.html#settings-that-matter",
     "title": "7  Create the TrueNAS SCALE VM",
-    "section": "",
-    "text": "Setting\nValue\n\n\n\n\nMachine\nq35\n\n\nBIOS\nOVMF (UEFI)\n\n\nCPU type\nhost\n\n\nCores\n4 or more\n\n\nRAM\n16 GB minimum, ballooning off\n\n\nSCSI controller (OS disk only)\nVirtIO SCSI\n\n\nOS disk\n16–32 GB on Proxmox SSD/NVMe\n\n\nNetwork\nVirtIO on vmbr0\n\n\nStart at boot\nOff until passthrough works",
+    "section": "7.2 Settings that matter",
+    "text": "7.2 Settings that matter\n\n\n\nSetting\nValue\n\n\n\n\nMachine\nq35\n\n\nBIOS\nOVMF (UEFI)\n\n\nCPU type\nhost\n\n\nCores\n4 or more\n\n\nRAM\n16 GB minimum, ballooning off\n\n\nSCSI controller (OS disk only)\nVirtIO SCSI\n\n\nOS disk\n16–32 GB on Proxmox SSD/NVMe\n\n\nNetwork\nVirtIO on vmbr0\n\n\nStart at boot\nOff until passthrough works\n\n\n\nq35 is required for real PCIe. i440fx only does legacy PCI.",
     "crumbs": [
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
     ]
@@ -293,8 +303,8 @@
     "objectID": "07-create-vm.html#example-qm-create",
     "href": "07-create-vm.html#example-qm-create",
     "title": "7  Create the TrueNAS SCALE VM",
-    "section": "7.2 Example qm create",
-    "text": "7.2 Example qm create\nqm create 300 \\\n  --name truenas \\\n  --memory 16384 \\\n  --balloon 0 \\\n  --cores 4 \\\n  --cpu host \\\n  --bios ovmf \\\n  --machine q35 \\\n  --efidisk0 local-lvm:1,efitype=4m,pre-enrolled-keys=0 \\\n  --scsihw virtio-scsi-single \\\n  --scsi0 local-lvm:32,ssd=1 \\\n  --net0 virtio,bridge=vmbr0 \\\n  --ostype l26\nAttach the SCALE ISO, set boot order to the CD, install onto scsi0, then set boot back to the virtual disk.\n\n\n\n\n\n\nTip\n\n\n\nKeep the TrueNAS boot pool on the virtual disk. The HBA is only for the data pool. You can rebuild the VM and import the same pool later.",
+    "section": "7.3 Example qm create",
+    "text": "7.3 Example qm create\nqm create 300 \\\n  --name truenas \\\n  --memory 16384 \\\n  --balloon 0 \\\n  --cores 4 \\\n  --cpu host \\\n  --bios ovmf \\\n  --machine q35 \\\n  --efidisk0 local-lvm:1,efitype=4m,pre-enrolled-keys=0 \\\n  --scsihw virtio-scsi-single \\\n  --scsi0 local-lvm:32,ssd=1 \\\n  --ide2 local:iso/TrueNAS-SCALE-latest.iso,media=cdrom \\\n  --boot order=ide2\\;scsi0 \\\n  --net0 virtio,bridge=vmbr0 \\\n  --ostype l26\n--ide2 ...,media=cdrom attaches the ISO downloaded above; swap in your actual filename. --boot order=ide2;scsi0 boots the installer first, then falls back to the virtual disk.\nStart the VM, open its Console in the Proxmox UI, and run through the TrueNAS SCALE installer onto the virtual disk (scsi0) — the only disk it should see at this point, since the HBA isn’t attached yet. Once TrueNAS boots on its own from scsi0:\nqm set 300 --boot order=scsi0\nqm set 300 --ide2 none\nThis drops the ISO and returns the boot order to the virtual disk only, so the VM doesn’t try to reinstall on every reboot.\n\n\n\n\n\n\nTip\n\n\n\nKeep the TrueNAS boot pool on the virtual disk. The HBA is only for the data pool. You can rebuild the VM and import the same pool later.",
     "crumbs": [
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
     ]
