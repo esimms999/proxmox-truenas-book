@@ -504,7 +504,7 @@ Note
 <h2 data-number="2.2" class="anchored" data-anchor-id="where-vendors-hide-iommu"><span class="header-section-number">2.2</span> Where vendors hide IOMMU</h2>
 <ul>
 <li><strong>Intel:</strong> Advanced → CPU Configuration, System Agent, or Chipset. Labels: <em>VT-d</em>, <em>Intel VT for Directed I/O</em>, <em>IOMMU</em>.</li>
-<li><strong>AMD:</strong> Advanced → AMD CBS → NBIO, or next to <em>SVM Mode</em>. Labels: <em>IOMMU</em>, <em>AMD-Vi</em>.</li>
+<li><strong>AMD:</strong> Advanced → AMD CBS → NBIO, or next to <em>SVM Mode</em>. Labels: <em>IOMMU</em>, <em>AMD-Vi</em>. On some boards SVM Mode instead lives under <strong>OC (Overclocking) → CPU Features</strong>.</li>
 </ul>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -517,6 +517,19 @@ Important
 </div>
 <div class="callout-body-container callout-body">
 <p>VT-x / SVM alone is not enough. Without VT-d or AMD-Vi, <code>/sys/kernel/iommu_groups</code> stays empty and Proxmox will refuse the PCI device.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Example: Gigabyte Z390 AORUS PRO WIFI-CF (Intel i9-9900).</strong> On this board (AMI UEFI, BIOS F14a) the settings above live under Intel-labeled menus rather than the AMD ones — VT-x/VT-d under Advanced → CPU Configuration, Above 4G Decoding and Resizable BAR support under Advanced → Chipset. Being an Intel Z390/Coffee Lake platform, the Intel rows in the table apply (Resizable BAR only needed if also passing through a GPU); the AMD-specific rows and quirks (SVM path, forced-off Resizable BAR) don’t apply here.</p>
 </div>
 </div>
 </section>

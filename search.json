@@ -94,7 +94,7 @@
     "href": "02-bios.html#where-vendors-hide-iommu",
     "title": "2  BIOS and UEFI settings",
     "section": "2.2 Where vendors hide IOMMU",
-    "text": "2.2 Where vendors hide IOMMU\n\nIntel: Advanced → CPU Configuration, System Agent, or Chipset. Labels: VT-d, Intel VT for Directed I/O, IOMMU.\nAMD: Advanced → AMD CBS → NBIO, or next to SVM Mode. Labels: IOMMU, AMD-Vi.\n\n\n\n\n\n\n\nImportant\n\n\n\nVT-x / SVM alone is not enough. Without VT-d or AMD-Vi, /sys/kernel/iommu_groups stays empty and Proxmox will refuse the PCI device.",
+    "text": "2.2 Where vendors hide IOMMU\n\nIntel: Advanced → CPU Configuration, System Agent, or Chipset. Labels: VT-d, Intel VT for Directed I/O, IOMMU.\nAMD: Advanced → AMD CBS → NBIO, or next to SVM Mode. Labels: IOMMU, AMD-Vi. On some boards SVM Mode instead lives under OC (Overclocking) → CPU Features.\n\n\n\n\n\n\n\nImportant\n\n\n\nVT-x / SVM alone is not enough. Without VT-d or AMD-Vi, /sys/kernel/iommu_groups stays empty and Proxmox will refuse the PCI device.\n\n\n\n\n\n\n\n\nTip\n\n\n\nExample: Gigabyte Z390 AORUS PRO WIFI-CF (Intel i9-9900). On this board (AMI UEFI, BIOS F14a) the settings above live under Intel-labeled menus rather than the AMD ones — VT-x/VT-d under Advanced → CPU Configuration, Above 4G Decoding and Resizable BAR support under Advanced → Chipset. Being an Intel Z390/Coffee Lake platform, the Intel rows in the table apply (Resizable BAR only needed if also passing through a GPU); the AMD-specific rows and quirks (SVM path, forced-off Resizable BAR) don’t apply here.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>BIOS and UEFI settings</span>"
     ]
