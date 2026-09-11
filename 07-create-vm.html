@@ -440,7 +440,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="download-the-truenas-scale-iso" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="download-the-truenas-scale-iso"><span class="header-section-number">7.1</span> Download the TrueNAS SCALE ISO</h2>
 <ul>
-<li>Get the current SCALE ISO from the <a href="https://www.truenas.com/download-truenas-scale/">TrueNAS download page</a>. Pick the stable release, not Nightlies, unless you specifically need a newer feature.</li>
+<li>Get the ISO from the <a href="https://www.truenas.com/download-truenas-scale/">TrueNAS download page</a>. As of this writing, <strong>25.10 “Goldeye”</strong> is the current stable line (25.10.7 at the time of writing) — pick that, not the TrueNAS 26 beta and not Nightlies, unless you specifically need a newer feature and accept the risk.</li>
 <li>Verify the download against the checksum published next to it on that page:</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> TrueNAS-SCALE-<span class="pp">*</span>.iso</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -448,8 +448,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Get the ISO onto Proxmox storage. Either upload it through the UI (<strong>Datacenter → <em>node</em> → local (or other storage) → ISO Images → Upload</strong>), or pull it straight from the Proxmox shell into the storage’s ISO directory:</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-O</span> /var/lib/vz/template/iso/TrueNAS-SCALE-latest.iso <span class="dt">\</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  https://download.sys.truenas.net/TrueNAS-SCALE-Dragonfish/latest/TrueNAS-SCALE.iso</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Replace the URL with the one from the download page — the “latest” redirect changes with each release. <code>local</code> is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.</p>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  https://download.sys.truenas.net/TrueNAS-SCALE-Goldeye/latest/TrueNAS-SCALE.iso</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Replace the URL with the one from the download page — the codename and version change with each release (it was “Dragonfish” for the 24.04 line; “Goldeye” is 25.10). <code>local</code> is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.</p>
 </section>
 <section id="settings-that-matter" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="settings-that-matter"><span class="header-section-number">7.2</span> Settings that matter</h2>

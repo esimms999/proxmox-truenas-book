@@ -24,7 +24,7 @@
     "href": "index.html#scope",
     "title": "TrueNAS SCALE on Proxmox",
     "section": "Scope",
-    "text": "Scope\nChapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.\nCommands assume a current Proxmox VE 8/9 host and TrueNAS SCALE 24.10 / 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own lspci.",
+    "text": "Scope\nChapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.\nCommands assume the current stable releases as of this writing: Proxmox VE 9 (9.2, on Debian 13 “Trixie”) and TrueNAS SCALE 25.10 “Goldeye”. Proxmox VE 8 (Debian 12 “Bookworm”) reached end of life in August 2026 — upgrade if you’re still on it. TrueNAS 26 exists as a beta line but isn’t the recommended stable release yet; this book targets 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own lspci.\n\n\n\n\n\n\nTipCheck which Proxmox VE you’re on\n\n\n\npveversion -v\nThe first line’s proxmox-ve: field starts with 9. on a current install or 8. on the now-EOL release. Most commands in this book work the same on either, but paths differ where noted — e.g. /etc/kernel/cmdline (systemd-boot, typical on VE 9) versus /etc/default/grub (GRUB, common on older VE 8 and BIOS-mode installs) in 4  Enable IOMMU on the Proxmox host. If you’re still on VE 8, plan the upgrade to VE 9 before investing time in passthrough setup.",
     "crumbs": [
       "Preface"
     ]
@@ -174,7 +174,7 @@
     "href": "04-iommu.html#systemd-boot",
     "title": "4  Enable IOMMU on the Proxmox host",
     "section": "4.2 systemd-boot",
-    "text": "4.2 systemd-boot\nTypical on current UEFI Proxmox 8/9. Edit /etc/kernel/cmdline and append to the existing line. Do not delete root=.\nIntel:\nintel_iommu=on iommu=pt\nAMD:\namd_iommu=on iommu=pt\nApply:\nproxmox-boot-tool refresh\niommu=pt is passthrough mode: only devices given to VMs pay IOMMU cost.\n\n\n\n\n\n\nNote\n\n\n\nOn Proxmox kernels 6.8+, Intel often turns IOMMU on without intel_iommu=on. Keep the flag anyway so the intent is obvious in /proc/cmdline.",
+    "text": "4.2 systemd-boot\nTypical on a current UEFI Proxmox VE 9 install (also applies to VE 8, now end-of-life, if you haven’t upgraded). Edit /etc/kernel/cmdline and append to the existing line. Do not delete root=.\nIntel:\nintel_iommu=on iommu=pt\nAMD:\namd_iommu=on iommu=pt\nApply:\nproxmox-boot-tool refresh\niommu=pt is passthrough mode: only devices given to VMs pay IOMMU cost.\n\n\n\n\n\n\nNote\n\n\n\nOn Proxmox kernels 6.8+, Intel often turns IOMMU on without intel_iommu=on. Keep the flag anyway so the intent is obvious in /proc/cmdline.",
     "crumbs": [
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Enable IOMMU on the Proxmox host</span>"
     ]
@@ -274,7 +274,7 @@
     "href": "07-create-vm.html",
     "title": "7  Create the TrueNAS SCALE VM",
     "section": "",
-    "text": "7.1 Download the TrueNAS SCALE ISO\nInstall TrueNAS onto a virtual OS disk first, with no HBA attached. Confirm it boots. Add passthrough in Chapter 8.\nReplace the URL with the one from the download page — the “latest” redirect changes with each release. local is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.",
+    "text": "7.1 Download the TrueNAS SCALE ISO\nInstall TrueNAS onto a virtual OS disk first, with no HBA attached. Confirm it boots. Add passthrough in Chapter 8.\nReplace the URL with the one from the download page — the codename and version change with each release (it was “Dragonfish” for the 24.04 line; “Goldeye” is 25.10). local is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.",
     "crumbs": [
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
     ]
@@ -284,7 +284,7 @@
     "href": "07-create-vm.html#download-the-truenas-scale-iso",
     "title": "7  Create the TrueNAS SCALE VM",
     "section": "",
-    "text": "Get the current SCALE ISO from the TrueNAS download page. Pick the stable release, not Nightlies, unless you specifically need a newer feature.\nVerify the download against the checksum published next to it on that page:\n\nsha256sum TrueNAS-SCALE-*.iso\n\nGet the ISO onto Proxmox storage. Either upload it through the UI (Datacenter → node → local (or other storage) → ISO Images → Upload), or pull it straight from the Proxmox shell into the storage’s ISO directory:\n\nwget -O /var/lib/vz/template/iso/TrueNAS-SCALE-latest.iso \\\n  https://download.sys.truenas.net/TrueNAS-SCALE-Dragonfish/latest/TrueNAS-SCALE.iso",
+    "text": "Get the ISO from the TrueNAS download page. As of this writing, 25.10 “Goldeye” is the current stable line (25.10.7 at the time of writing) — pick that, not the TrueNAS 26 beta and not Nightlies, unless you specifically need a newer feature and accept the risk.\nVerify the download against the checksum published next to it on that page:\n\nsha256sum TrueNAS-SCALE-*.iso\n\nGet the ISO onto Proxmox storage. Either upload it through the UI (Datacenter → node → local (or other storage) → ISO Images → Upload), or pull it straight from the Proxmox shell into the storage’s ISO directory:\n\nwget -O /var/lib/vz/template/iso/TrueNAS-SCALE-latest.iso \\\n  https://download.sys.truenas.net/TrueNAS-SCALE-Goldeye/latest/TrueNAS-SCALE.iso",
     "crumbs": [
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Create the TrueNAS SCALE VM</span>"
     ]

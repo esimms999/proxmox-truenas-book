@@ -472,7 +472,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="scope" class="level2">
 <h2 class="anchored" data-anchor-id="scope">Scope</h2>
 <p>Chapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.</p>
-<p>Commands assume a current Proxmox VE 8/9 host and TrueNAS SCALE 24.10 / 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own <code>lspci</code>.</p>
+<p>Commands assume the current stable releases as of this writing: <strong>Proxmox VE 9</strong> (9.2, on Debian 13 “Trixie”) and <strong>TrueNAS SCALE 25.10 “Goldeye”</strong>. Proxmox VE 8 (Debian 12 “Bookworm”) reached end of life in August 2026 — upgrade if you’re still on it. TrueNAS 26 exists as a beta line but isn’t the recommended stable release yet; this book targets 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own <code>lspci</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Check which Proxmox VE you’re on
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pveversion</span> <span class="at">-v</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The first line’s <code>proxmox-ve:</code> field starts with <code>9.</code> on a current install or <code>8.</code> on the now-EOL release. Most commands in this book work the same on either, but paths differ where noted — e.g.&nbsp;<code>/etc/kernel/cmdline</code> (systemd-boot, typical on VE 9) versus <code>/etc/default/grub</code> (GRUB, common on older VE 8 and BIOS-mode installs) in <a href="04-iommu.html" class="quarto-xref"><span>4&nbsp; Enable IOMMU on the Proxmox host</span></a>. If you’re still on VE 8, plan the upgrade to VE 9 before investing time in passthrough setup.</p>
+</div>
+</div>
 
 
 </section>
