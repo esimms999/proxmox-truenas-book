@@ -30,7 +30,7 @@ update-grub
 
 ## systemd-boot
 
-Typical on current UEFI Proxmox 8/9. Edit `/etc/kernel/cmdline` and **append** to the existing line. Do not delete `root=`.
+Typical on a current UEFI Proxmox VE 9 install (also applies to VE 8, now end-of-life, if you haven't upgraded). Edit `/etc/kernel/cmdline` and **append** to the existing line. Do not delete `root=`.
 
 Intel:
 
