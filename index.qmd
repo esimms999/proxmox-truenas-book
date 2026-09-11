@@ -25,4 +25,14 @@ quarto publish gh-pages
 
 Chapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.
 
-Commands assume a current Proxmox VE 8/9 host and TrueNAS SCALE 24.10 / 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own `lspci`.
+Commands assume the current stable releases as of this writing: **Proxmox VE 9** (9.2, on Debian 13 "Trixie") and **TrueNAS SCALE 25.10 "Goldeye"**. Proxmox VE 8 (Debian 12 "Bookworm") reached end of life in August 2026 — upgrade if you're still on it. TrueNAS 26 exists as a beta line but isn't the recommended stable release yet; this book targets 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own `lspci`.
+
+::: {.callout-tip}
+## Check which Proxmox VE you're on
+
+```bash
+pveversion -v
+```
+
+The first line's `proxmox-ve:` field starts with `9.` on a current install or `8.` on the now-EOL release. Most commands in this book work the same on either, but paths differ where noted — e.g. `/etc/kernel/cmdline` (systemd-boot, typical on VE 9) versus `/etc/default/grub` (GRUB, common on older VE 8 and BIOS-mode installs) in @sec-iommu. If you're still on VE 8, plan the upgrade to VE 9 before investing time in passthrough setup.
+:::
