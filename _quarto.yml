@@ -9,18 +9,23 @@ book:
   date: today
   chapters:
     - index.qmd
-    - 01-overview.qmd
-    - 02-bios.qmd
-    - 03-install-proxmox.qmd
-    - 04-iommu.qmd
-    - 05-identify-hba.qmd
-    - 06-vfio.qmd
-    - 07-create-vm.qmd
-    - 08-passthrough.qmd
-    - 09-gpu-passthrough.qmd
-    - 10-truenas.qmd
-    - 11-troubleshooting.qmd
-    - 12-reference.qmd
+    - part: "Server 1"
+      chapters:
+        - server1/01-overview.qmd
+        - server1/02-bios.qmd
+        - server1/03-install-proxmox.qmd
+        - server1/04-iommu.qmd
+        - server1/05-identify-hba.qmd
+        - server1/06-vfio.qmd
+        - server1/07-create-vm.qmd
+        - server1/08-passthrough.qmd
+        - server1/09-gpu-passthrough.qmd
+        - server1/10-truenas.qmd
+        - server1/11-troubleshooting.qmd
+        - server1/12-reference.qmd
+    - part: "Server 2"
+      chapters:
+        - server2/00-overview.qmd
   repo-url: https://github.com/esimms999/proxmox-truenas-book
   sidebar:
     style: docked

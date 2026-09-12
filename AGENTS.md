@@ -2,7 +2,16 @@
 
 ## What this is
 
-A Quarto book (`_quarto.yml`, chapters `01-*.qmd` … `12-*.qmd`, `index.qmd`) documenting how to run TrueNAS SCALE as a VM on Proxmox VE with an HBA passed through in IT mode, plus a parallel GPU passthrough setup on the same host. Render with `quarto render` (RStudio: **Render Book**); output goes to `_book/`.
+A Quarto book (`_quarto.yml`, `index.qmd`) documenting how to run TrueNAS SCALE as a VM on Proxmox VE with an HBA passed through in IT mode, plus a parallel GPU passthrough setup on the same host. Render with `quarto render` (RStudio: **Render Book**); output goes to `_book/`.
+
+## Two-server structure
+
+This documents **two physical servers**, one Quarto book `part:` per server:
+
+- **Part I: Server 1** — chapters live in `server1/` (`01-overview.qmd` … `12-reference.qmd`). Fully written; targets bare metal with no existing OS, latest stable Proxmox VE 9 / TrueNAS SCALE 25.10 "Goldeye".
+- **Part II: Server 2** — chapters live in `server2/`. Currently just a placeholder (`00-overview.qmd`) — the user hasn't provided that hardware's specs yet. When they do, build out `server2/` following the same chapter shape as `server1/` (BIOS → install Proxmox → IOMMU → identify HBA → vfio → create VM → passthrough → GPU passthrough if applicable → TrueNAS → troubleshooting → reference), adjusted for that hardware. Use distinct `@sec-*` labels per part (e.g. suffix or prefix them) to avoid clashing with Server 1's labels — do not reuse `#sec-bios`, `#sec-vm`, etc. as-is in `server2/`.
+
+Both parts are wired into `_quarto.yml` under `book.chapters` as `part:` entries; `index.qmd` (the preface, outside both parts) explains the two-part split in its Scope section.
 
 ## Source-of-truth priority
 

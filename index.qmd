@@ -23,7 +23,10 @@ quarto publish gh-pages
 
 ## Scope
 
-Chapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.
+This is a two-server runbook, one part per physical host:
+
+- **Part I: Server 1** — the build documented so far. Chapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.
+- **Part II: Server 2** — placeholder until that hardware's specs are provided. It will follow the same chapter shape as Part I, adjusted for whatever differs on that build.
 
 This book starts from **bare metal with no OS installed** and targets the current stable releases as of this writing: **Proxmox VE 9** (9.2, on Debian 13 "Trixie") and **TrueNAS SCALE 25.10 "Goldeye"**. It does not cover upgrading an existing older install — @sec-install walks through installing Proxmox VE 9 fresh. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own `lspci`.
 
