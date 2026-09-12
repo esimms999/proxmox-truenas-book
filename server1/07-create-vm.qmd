@@ -70,3 +70,30 @@ This drops the ISO and returns the boot order to the virtual disk only, so the V
 ::: {.callout-tip}
 Keep the TrueNAS boot pool on the virtual disk. The HBA is only for the data pool. You can rebuild the VM and import the same pool later.
 :::
+
+## Or: use the Create VM wizard
+
+Everything above maps directly onto Proxmox's **Create VM** wizard (top-right button), tab by tab:
+
+| Wizard tab | Field | Set to |
+|---|---|---|
+| General | VM ID / Name | `300` / `truenas` |
+| OS | ISO image | The TrueNAS ISO uploaded earlier |
+| OS | Type / Version | Linux / 6.x - 2.6 Kernel |
+| System | Machine | `q35` |
+| System | BIOS | `OVMF (UEFI)` |
+| System | Add EFI Disk | Checked, storage `local-lvm`, untick **Pre-Enroll keys** |
+| Disks | Bus/Device | SCSI, storage `local-lvm`, size `32` GiB |
+| Disks | SCSI Controller | `VirtIO SCSI single` |
+| Disks | SSD emulation | Checked |
+| CPU | Cores | `4` |
+| CPU | Type | `host` |
+| Memory | Memory (MiB) | `16384`, untick **Ballooning Device** |
+| Network | Bridge / Model | `vmbr0` / `VirtIO (paravirtualized)` |
+| Confirm | Start after created | Untick if you want to double-check settings first |
+
+::: {.callout-note}
+The wizard adds the CD-ROM and disk in the order you configured them, which usually puts the CD-ROM first already. Before starting the VM, confirm the boot order under **Hardware → Options → Boot Order**: the CD-ROM (ISO) should be above the SCSI disk, and the HBA must not be listed at all yet. This is the GUI equivalent of `--boot order=ide2;scsi0`.
+:::
+
+After install, do the CLI cleanup's GUI equivalent: open **Hardware**, select the **CD/DVD Drive**, and either detach the ISO or set it to "Do not use any media" — then revisit **Options → Boot Order** and drop the CD-ROM entry (or untick it) so only the SCSI disk remains.
