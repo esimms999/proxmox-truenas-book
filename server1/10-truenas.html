@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; Installing Proxmox VE – TrueNAS SCALE on Proxmox</title>
+<title>10&nbsp; TrueNAS after passthrough – TrueNAS SCALE on Proxmox</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,67 +26,32 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./04-iommu.html" rel="next">
-<link href="./02-bios.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ee9c83c9c8f2a9ad07a038a633b2744c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-c9678173fef5df2d23db06a8caf37d20.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-ee9c83c9c8f2a9ad07a038a633b2744c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../server1/11-troubleshooting.html" rel="next">
+<link href="../server1/09-gpu-passthrough.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-ee9c83c9c8f2a9ad07a038a633b2744c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-c9678173fef5df2d23db06a8caf37d20.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-ee9c83c9c8f2a9ad07a038a633b2744c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -290,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-install-proxmox.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../server1/01-overview.html">Server 1</a></li><li class="breadcrumb-item"><a href="../server1/10-truenas.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -305,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">TrueNAS SCALE on Proxmox</a> 
+      <a href="../">TrueNAS SCALE on Proxmox</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/esimms999/proxmox-truenas-book" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -321,82 +286,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Server 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-overview.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/01-overview.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Overview</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-bios.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/02-bios.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-install-proxmox.html" class="sidebar-item-text sidebar-link active">
+  <a href="../server1/03-install-proxmox.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-iommu.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/04-iommu.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./05-identify-hba.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/05-identify-hba.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Identify the HBA and IOMMU group</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./06-vfio.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/06-vfio.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bind the HBA to vfio-pci</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./07-create-vm.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/07-create-vm.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Create the TrueNAS SCALE VM</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./08-passthrough.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/08-passthrough.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pass the HBA into the VM</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09-gpu-passthrough.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/09-gpu-passthrough.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10-truenas.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/10-truenas.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./11-troubleshooting.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/11-troubleshooting.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./12-reference.html" class="sidebar-item-text sidebar-link">
+  <a href="../server1/12-reference.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Command reference</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Server 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../server2/00-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Server 2</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -407,19 +400,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#preparing-installation-media" id="toc-preparing-installation-media" class="nav-link active" data-scroll-target="#preparing-installation-media"><span class="header-section-number">3.1</span> Preparing installation media</a></li>
-  <li><a href="#booting-the-installer" id="toc-booting-the-installer" class="nav-link" data-scroll-target="#booting-the-installer"><span class="header-section-number">3.2</span> Booting the installer</a></li>
-  <li><a href="#running-the-installer" id="toc-running-the-installer" class="nav-link" data-scroll-target="#running-the-installer"><span class="header-section-number">3.3</span> Running the installer</a></li>
+  <li><a href="#first-checks" id="toc-first-checks" class="nav-link active" data-scroll-target="#first-checks"><span class="header-section-number">10.1</span> First checks</a></li>
+  <li><a href="#guest-hygiene" id="toc-guest-hygiene" class="nav-link" data-scroll-target="#guest-hygiene"><span class="header-section-number">10.2</span> Guest hygiene</a></li>
+  <li><a href="#what-not-to-do" id="toc-what-not-to-do" class="nav-link" data-scroll-target="#what-not-to-do"><span class="header-section-number">10.3</span> What not to do</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/03-install-proxmox.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/server1/10-truenas.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../server1/01-overview.html">Server 1</a></li><li class="breadcrumb-item"><a href="../server1/10-truenas.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-install" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Proxmox VE</span></span></h1>
+<h1 class="title"><span id="sec-truenas" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TrueNAS after passthrough</span></span></h1>
 </div>
 
 
@@ -436,58 +429,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>With the BIOS settings from <a href="02-bios.html" class="quarto-xref"><span>Chapter 2</span></a> in place, install Proxmox VE itself before moving on to IOMMU and passthrough configuration.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The HBA and GPU should already be seated in the system at this point — some boards renumber PCIe slots or change IOMMU grouping when cards are added or removed later. The drives on the HBA do <strong>not</strong> need to be connected yet, and no other storage needs to be attached; add them once you’re ready to pass the card through to a VM.</p>
-</div>
-</div>
-<section id="preparing-installation-media" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="preparing-installation-media"><span class="header-section-number">3.1</span> Preparing installation media</h2>
+<section id="first-checks" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="first-checks"><span class="header-section-number">10.1</span> First checks</h2>
 <ul>
-<li>Get the current Proxmox VE installer ISO from the <a href="https://www.proxmox.com/en/downloads">Proxmox downloads page</a>.</li>
-<li>If reusing a drive that had a prior OS or partition table on it, wipe it first with <strong>GParted</strong> to avoid stale ESP or RAID metadata confusing the installer.</li>
-<li>Flash the ISO to a USB stick with <strong>balenaEtcher</strong> (or Rufus on Windows).</li>
+<li>Disks appear with serial numbers, not generic <code>sdX</code> only</li>
+<li>SMART works inside TrueNAS, not on the Proxmox host</li>
+<li>Pool import or create succeeds without “disk in use” errors</li>
 </ul>
 </section>
-<section id="booting-the-installer" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="booting-the-installer"><span class="header-section-number">3.2</span> Booting the installer</h2>
+<section id="guest-hygiene" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="guest-hygiene"><span class="header-section-number">10.2</span> Guest hygiene</h2>
 <ul>
-<li>Plug in the USB stick, reboot, and open the boot menu (usually F11/F12/Esc — varies by vendor).</li>
-<li>Pick the boot entry explicitly labeled <strong>UEFI: [your USB drive]</strong>. Booting the non-UEFI/legacy entry produces a BIOS-mode install, which fights with the OVMF (UEFI) VMs used later in this book.</li>
+<li>Static MAC on the VirtIO NIC, plus a DHCP reservation or static IP</li>
+<li>Do not use Proxmox snapshots of the virtual OS disk as the backup plan for the pool</li>
+<li>Snapshot and replicate <strong>inside</strong> TrueNAS (or <code>zfs send</code> to another box)</li>
+<li>VirtIO networking is enough for SMB/NFS. Pass a spare NIC later if you want 10 GbE with less CPU</li>
 </ul>
 </section>
-<section id="running-the-installer" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="running-the-installer"><span class="header-section-number">3.3</span> Running the installer</h2>
+<section id="what-not-to-do" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="what-not-to-do"><span class="header-section-number">10.3</span> What not to do</h2>
 <ul>
-<li>Choose <strong>Install Proxmox VE (Graphical)</strong> and step through the EULA and target disk selection.</li>
-<li>For the target filesystem, ext4 is the simpler choice for the boot disk; ZFS is also offered by the installer but adds boot-pool complexity that isn’t needed here. Either way the installer detects UEFI and creates the EFI System Partition (ESP) automatically.</li>
-<li>Set the host’s network, timezone, and root password/email as prompted, then let it finish and reboot.</li>
+<li>Do not let Proxmox mount or SMART-scan the HBA disks</li>
+<li>Do not put swap or the Proxmox boot disk on the passed-through card</li>
+<li>Do not enable QEMU disk cache tricks on the data pool — there is no QEMU disk in front of it</li>
 </ul>
-<p>After the reboot, confirm the host actually came up in UEFI mode:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">proxmox-boot-tool</span> status</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You want to see <code>System currently booted with uefi</code>. If it instead shows <code>bios</code>/<code>legacy</code>, the boot entry chosen during install was wrong — re-check the BIOS boot-mode settings from <a href="02-bios.html" class="quarto-xref"><span>Chapter 2</span></a> and reinstall.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Additional data drives can be added to Proxmox at any time — they don’t need to be present for this install. The HBA’s drives specifically should stay disconnected until you’re ready to pass the controller through to the TrueNAS VM in <a href="08-passthrough.html" class="quarto-xref"><span>Chapter 8</span></a>.</p>
-</div>
-</div>
 
 
 </section>
@@ -913,13 +878,13 @@ Tip
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02-bios.html" class="pagination-link" aria-label="BIOS and UEFI settings">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">BIOS and UEFI settings</span></span>
+      <a href="../server1/09-gpu-passthrough.html" class="pagination-link" aria-label="GPU passthrough">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GPU passthrough</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./04-iommu.html" class="pagination-link" aria-label="Enable IOMMU on the Proxmox host">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enable IOMMU on the Proxmox host</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../server1/11-troubleshooting.html" class="pagination-link" aria-label="Troubleshooting">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Troubleshooting</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -928,5 +893,5 @@ Tip
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/03-install-proxmox.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/esimms999/proxmox-truenas-book/blob/main/server1/10-truenas.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/esimms999/proxmox-truenas-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
