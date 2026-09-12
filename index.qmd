@@ -23,16 +23,19 @@ quarto publish gh-pages
 
 ## Scope
 
-Chapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.
+This is a two-server runbook, one part per physical host:
 
-Commands assume the current stable releases as of this writing: **Proxmox VE 9** (9.2, on Debian 13 "Trixie") and **TrueNAS SCALE 25.10 "Goldeye"**. Proxmox VE 8 (Debian 12 "Bookworm") reached end of life in August 2026 — upgrade if you're still on it. TrueNAS 26 exists as a beta line but isn't the recommended stable release yet; this book targets 25.10. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own `lspci`.
+- **Part I: Server 1** — the build documented so far. Chapters walk the host from a cold BIOS through installing Proxmox VE, IOMMU, vfio binding, the TrueNAS VM, the PCI passthrough line for the HBA, a parallel GPU passthrough setup, and the failures that usually show up after a device is attached.
+- **Part II: Server 2** — placeholder until that hardware's specs are provided. It will follow the same chapter shape as Part I, adjusted for whatever differs on that build.
+
+This book starts from **bare metal with no OS installed** and targets the current stable releases as of this writing: **Proxmox VE 9** (9.2, on Debian 13 "Trixie") and **TrueNAS SCALE 25.10 "Goldeye"**. It does not cover upgrading an existing older install — @sec-install walks through installing Proxmox VE 9 fresh. PCI addresses and vendor:device IDs in examples are placeholders. Replace them with output from your own `lspci`.
 
 ::: {.callout-tip}
-## Check which Proxmox VE you're on
+After the install in @sec-install, confirm you landed on VE 9 with:
 
 ```bash
 pveversion -v
 ```
 
-The first line's `proxmox-ve:` field starts with `9.` on a current install or `8.` on the now-EOL release. Most commands in this book work the same on either, but paths differ where noted — e.g. `/etc/kernel/cmdline` (systemd-boot, typical on VE 9) versus `/etc/default/grub` (GRUB, common on older VE 8 and BIOS-mode installs) in @sec-iommu. If you're still on VE 8, plan the upgrade to VE 9 before investing time in passthrough setup.
+The first line's `proxmox-ve:` field should read `9.x`.
 :::

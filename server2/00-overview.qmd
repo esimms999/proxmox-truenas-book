@@ -1,0 +1,9 @@
+# Server 2 {#sec-server2-overview}
+
+Content for the second server is pending its hardware specs.
+
+Once the motherboard, CPU, HBA, and (if applicable) GPU for this build are known, this part will follow the same shape as @sec-overview through the rest of Part I for Server 1: BIOS/UEFI settings, installing Proxmox VE, IOMMU, HBA identification and vfio binding, TrueNAS VM creation, passthrough, GPU passthrough (if used), and troubleshooting — adjusted for whatever differs on this hardware.
+
+::: {.callout-note}
+Nothing to do here yet. This placeholder keeps Part II in the book's structure and cross-reference numbering stable as Server 1 content evolves.
+:::

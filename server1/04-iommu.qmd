@@ -6,31 +6,7 @@ SSH into the host. See how it boots:
 proxmox-boot-tool status
 ```
 
-## GRUB
-
-Typical on BIOS installs and some older UEFI installs. Edit `/etc/default/grub`.
-
-Intel:
-
-```bash
-GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt"
-```
-
-AMD (modern kernels often enable AMD-Vi without the extra flag; keeping it is fine):
-
-```bash
-GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on iommu=pt"
-```
-
-Apply:
-
-```bash
-update-grub
-```
-
-## systemd-boot
-
-Typical on a current UEFI Proxmox VE 9 install (also applies to VE 8, now end-of-life, if you haven't upgraded). Edit `/etc/kernel/cmdline` and **append** to the existing line. Do not delete `root=`.
+A fresh Proxmox VE 9 install through the UEFI installer entry (@sec-install) uses **systemd-boot** — that's the path below. Edit `/etc/kernel/cmdline` and **append** to the existing line. Do not delete `root=`.
 
 Intel:
 
@@ -54,6 +30,19 @@ proxmox-boot-tool refresh
 
 ::: {.callout-note}
 On Proxmox kernels 6.8+, Intel often turns IOMMU on without `intel_iommu=on`. Keep the flag anyway so the intent is obvious in `/proc/cmdline`.
+:::
+
+::: {.callout-note}
+## If `proxmox-boot-tool status` reports GRUB instead
+
+Unusual for a fresh UEFI install, but possible if the installer picked a BIOS/legacy target or CSM wasn't fully disabled (@sec-bios). Edit `/etc/default/grub` instead:
+
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt"    # Intel
+GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on iommu=pt"      # AMD
+```
+
+Apply with `update-grub`. Otherwise, re-check the BIOS boot-mode settings and reinstall in UEFI mode — the rest of this book assumes systemd-boot.
 :::
 
 ## Load VFIO at boot
