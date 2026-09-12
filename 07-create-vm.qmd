@@ -4,7 +4,7 @@ Install TrueNAS onto a **virtual OS disk** first, with no HBA attached. Confirm 
 
 ## Download the TrueNAS SCALE ISO
 
-- Get the ISO from the [TrueNAS download page](https://www.truenas.com/download-truenas-scale/). As of this writing, **25.10 "Goldeye"** is the current stable line (25.10.7 at the time of writing) — pick that, not the TrueNAS 26 beta and not Nightlies, unless you specifically need a newer feature and accept the risk.
+- Get the ISO from the [TrueNAS download page](https://www.truenas.com/download-truenas-scale/). Pick the current **stable** release — the page also lists a newer beta line and Nightlies, neither of which is appropriate for a first install.
 - Verify the download against the checksum published next to it on that page:
 
 ```bash
@@ -18,7 +18,7 @@ wget -O /var/lib/vz/template/iso/TrueNAS-SCALE-latest.iso \
   https://download.sys.truenas.net/TrueNAS-SCALE-Goldeye/latest/TrueNAS-SCALE.iso
 ```
 
-Replace the URL with the one from the download page — the codename and version change with each release (it was "Dragonfish" for the 24.04 line; "Goldeye" is 25.10). `local` is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.
+Replace the URL with the one from the download page — the codename (currently "Goldeye" for the 25.10 line) changes with each release. `local` is the default storage name for ISOs; use whatever storage you configured for ISO Images if it differs.
 
 ## Settings that matter
 
